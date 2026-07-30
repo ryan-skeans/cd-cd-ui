@@ -54,11 +54,11 @@ export default function Sidebar({ steps = DEFAULT_STEPS, onGetStarted }: Sidebar
             <div className="px-8 pb-8 pt-4 sm:pt-12 flex-1 flex flex-col justify-center">
                 <h1 className="text-4xl sm:text-5xl lg:text-[52px] font-medium tracking-tight leading-[1.05] text-[#FAFAFA] mb-6">
                     Claim Denied<br />
-                    Unfairly? It's Time<br />
+                    Unfairly? It&apos;s Time<br />
                     To Fight Back.
                 </h1>
                 <p className="text-[#EBEBEB]/80 text-[15px] sm:text-base leading-relaxed max-w-[420px] mb-12">
-                    Insurance companies are using AI and satellite imagery to unfairly deny claims more than ever. It's time to even the playing field.
+                    Insurance companies are using AI and satellite imagery to unfairly deny claims more than ever. It&apos;s time to even the playing field.
                 </p>
 
                 <div className="mb-4">

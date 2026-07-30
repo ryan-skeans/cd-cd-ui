@@ -1,20 +1,11 @@
 import {
-    Shield,
     ShieldCheck,
     CloudHail,
-    Wind,
     Satellite,
     FileText,
     FileCheck,
-    TrendingUp,
-    Zap,
-    BarChart,
     CheckCircle2,
-    MapPin,
-    Sparkles,
-    AlertTriangle,
     ArrowUpRight,
-    Search,
 } from "lucide-react";
 
 export default function MarketingSections() {
@@ -130,7 +121,7 @@ export default function MarketingSections() {
                                 <div className="space-y-2 py-2 text-[10px] text-brand-olive/80 leading-relaxed">
                                     <p className="font-semibold text-brand-olive">Re: Weather Damage Verification & Claim Denial Appeal</p>
                                     <p className="text-brand-olive/60 line-clamp-3">
-                                        "NOAA Doppler radar and localized telemetry confirm severe hail and 68+ mph wind gusts at the insured property address on the reported date of loss, directly contradicting carrier denial claims..."
+                                        &quot;NOAA Doppler radar and localized telemetry confirm severe hail and 68+ mph wind gusts at the insured property address on the reported date of loss, directly contradicting carrier denial claims...&quot;
                                     </p>
                                 </div>
 
@@ -216,7 +207,7 @@ export default function MarketingSections() {
 
                 <div className="relative z-20 max-w-md space-y-4">
                     <h2 className="text-3xl sm:text-4xl font-medium tracking-tight leading-tight">
-                        Don't let insurance carriers unfairly deny your claim.
+                        Don&apos;t let insurance carriers unfairly deny your claim.
                     </h2>
                     <p className="text-xs sm:text-sm text-white/70">
                         Run a free viability check with your property address and date of weather event.

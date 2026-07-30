@@ -8,7 +8,7 @@ import LocationPicker from "@/components/location-picker";
 import DatePicker from "@/components/date-picker";
 import LoadingState from "@/components/loading-state";
 import ResultsDashboard from "@/components/results-dashboard";
-import { Check, Shield, MapPin, Calendar, ArrowRight, Lock } from "lucide-react";
+import { Shield, MapPin, Calendar, ArrowRight, Lock } from "lucide-react";
 
 interface ViabilityCheckerProps {
     onGetStartedRef?: (handler: () => void) => void;
