@@ -201,12 +201,13 @@ export default function LocationPicker({
                     </div>
                 )}
 
-                {/* Instruction overlay */}
+                {/* Instruction hint — bottom-left corner, non-intrusive */}
                 {latitude === null && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="bg-white/90 backdrop-blur-md border border-brand-gray/30 shadow-sm rounded-xl px-5 py-3 text-sm text-brand-olive/80 flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-brand-olive" />
-                            Search or click the map to drop a pin
+                    <div className="absolute bottom-3 left-3 pointer-events-none">
+                        <div className="bg-brand-olive/80 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-[11px] text-white/90 flex items-center gap-1.5 shadow-md">
+                            <MapPin className="h-3 w-3 shrink-0" />
+                            <span className="hidden sm:inline">Search above or click map to pin</span>
+                            <span className="sm:hidden">Search or tap map</span>
                         </div>
                     </div>
                 )}
