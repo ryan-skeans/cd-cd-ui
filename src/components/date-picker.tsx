@@ -45,6 +45,8 @@ export default function DatePicker({ date, onDateChange }: DatePickerProps) {
             <div className="relative flex-1">
                 <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-olive text-opacity-70 pointer-events-none" />
                 <Input
+                    id="approximate-date"
+                    aria-label="Approximate date of damage"
                     type="text"
                     value={inputValue}
                     onChange={handleInputChange}
@@ -55,6 +57,8 @@ export default function DatePicker({ date, onDateChange }: DatePickerProps) {
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
+                        type="button"
+                        aria-label="Choose approximate date from calendar"
                         variant="outline"
                         size="icon"
                         className="h-11 w-11 shrink-0 bg-white border-brand-gray/50 hover:bg-zinc-50 hover:text-brand-olive text-brand-olive/70"

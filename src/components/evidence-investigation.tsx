@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, Suspense } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useEvidenceSearch } from "@/hooks/use-evidence-search";
@@ -11,24 +11,35 @@ import ResultsDashboard from "@/components/results-dashboard";
 import DemoUnlockModal from "@/components/demo-unlock-modal";
 import OfficialReport from "@/components/official-report";
 import { FEATURED_DEMO_INVESTIGATION, featuredDemoDisplayDate } from "@/lib/demo-investigation";
+import { trackDemoEvent } from "@/lib/demo-analytics";
 import { ShieldCheck, MapPin, Calendar, ArrowRight, Database, Sparkles } from "lucide-react";
 
-interface EvidenceInvestigationProps {
-    onGetStartedRef?: (handler: () => void) => void;
-}
-
-function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigationProps) {
+function EvidenceInvestigationContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
     const urlLat = searchParams.get("lat");
     const urlLng = searchParams.get("lng");
     const urlDate = searchParams.get("date");
+    const parsedUrlLat = urlLat === null ? null : Number(urlLat);
+    const parsedUrlLng = urlLng === null ? null : Number(urlLng);
+    const parsedUrlDate = useMemo(() => urlDate === null ? null : new Date(urlDate), [urlDate]);
+    const urlSearchReady = parsedUrlLat !== null
+        && Number.isFinite(parsedUrlLat)
+        && parsedUrlLat >= -90
+        && parsedUrlLat <= 90
+        && parsedUrlLng !== null
+        && Number.isFinite(parsedUrlLng)
+        && parsedUrlLng >= -180
+        && parsedUrlLng <= 180
+        && parsedUrlDate !== null
+        && !Number.isNaN(parsedUrlDate.getTime());
+    const invalidSharedLink = Boolean(urlLat || urlLng || urlDate) && !urlSearchReady;
 
     const [step, setStep] = useState<1 | 2 | 3>(1);
-    const [latitude, setLatitude] = useState<number | null>(urlLat ? parseFloat(urlLat) : null);
-    const [longitude, setLongitude] = useState<number | null>(urlLng ? parseFloat(urlLng) : null);
-    const [date, setDate] = useState<Date | undefined>(urlDate ? new Date(urlDate) : undefined);
+    const [latitude, setLatitude] = useState<number | null>(urlSearchReady ? parsedUrlLat : null);
+    const [longitude, setLongitude] = useState<number | null>(urlSearchReady ? parsedUrlLng : null);
+    const [date, setDate] = useState<Date | undefined>(urlSearchReady && parsedUrlDate ? parsedUrlDate : undefined);
     const [address, setAddress] = useState<string | undefined>();
     const [unlockOpen, setUnlockOpen] = useState(false);
 
@@ -48,7 +59,7 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
     } = useEvidenceSearch();
 
     const resetInvestigation = useCallback(() => {
-        router.replace("/", { scroll: false });
+        router.replace("/homeowners", { scroll: false });
         reset();
         setStep(1);
         setLatitude(null);
@@ -66,22 +77,16 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
     }, [reset, router]);
 
     useEffect(() => {
-        if (onGetStartedRef) {
-            onGetStartedRef(resetInvestigation);
-        }
-    }, [onGetStartedRef, resetInvestigation]);
-
-    useEffect(() => {
-        if (urlLat && urlLng && urlDate) {
+        if (urlSearchReady && parsedUrlLat !== null && parsedUrlLng !== null && parsedUrlDate) {
             // Debounce the auto-run slightly to avoid React StrictMode issues
             // where the component double-mounts and loses the mutation observer.
             const timeoutId = setTimeout(() => {
                 if (!hasAutoRun.current) {
                     hasAutoRun.current = true;
                     runSearch({
-                        latitude: parseFloat(urlLat),
-                        longitude: parseFloat(urlLng),
-                        estimatedDateOfDamage: new Date(urlDate).toISOString(),
+                        latitude: parsedUrlLat,
+                        longitude: parsedUrlLng,
+                        estimatedDateOfDamage: parsedUrlDate.toISOString(),
                     }, {
                         onSuccess: () => {
                             setStep(2);
@@ -100,7 +105,7 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
         } else {
             hasAutoRun.current = false;
         }
-    }, [urlLat, urlLng, urlDate, runSearch]);
+    }, [parsedUrlDate, parsedUrlLat, parsedUrlLng, runSearch, urlSearchReady]);
 
 
 
@@ -131,16 +136,18 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
         params.set("lat", searchLatitude.toString());
         params.set("lng", searchLongitude.toString());
         params.set("date", estimatedDateOfDamage);
-        router.push(`?${params.toString()}`, { scroll: false });
+        router.push(`/homeowners?${params.toString()}`, { scroll: false });
 
         reset(); // Clear previous results/errors
         hasAutoRun.current = true; // Prevent the useEffect from firing it again
+        trackDemoEvent("homeowner_search_started");
         runSearch({
             latitude: searchLatitude,
             longitude: searchLongitude,
             estimatedDateOfDamage,
         }, {
             onSuccess: () => {
+                trackDemoEvent("homeowner_search_completed");
                 setStep(2);
                 setTimeout(() => {
                     resultsRef.current?.scrollIntoView({
@@ -178,7 +185,9 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
             ? error.message
             : isError
                 ? "An unexpected error occurred. Please try again."
-                : null;
+                : invalidSharedLink
+                    ? "This shared investigation link is incomplete or invalid. Select a property and date to start a new search."
+                    : null;
 
     return (
         <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
@@ -192,9 +201,9 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
                     )}
 
                     <div className="border-b border-brand-gray/70 pb-5">
-                        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-brand-olive/50">New investigation</p>
-                        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-brand-olive">Locate the weather evidence.</h2>
-                        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-olive/60">Enter the property and the approximate date of loss. We&apos;ll separate nearby observations, reports, warning polygons, and contextual records into a sourced timeline.</p>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-brand-olive/50">Property evidence search</p>
+                        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-brand-olive">Check available weather records.</h2>
+                        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-olive/60">Enter the property and approximate date of damage. We&apos;ll organize nearby observations, reports, warning areas, precipitation, and available imagery into a sourced timeline.</p>
                     </div>
 
                     <div className="flex flex-col gap-4 rounded-2xl border border-brand-lime/60 bg-brand-lime/15 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -204,7 +213,7 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
                             </span>
                             <div>
                                 <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-brand-olive/50">Not sure what to search?</p>
-                                <h3 className="mt-1 text-sm font-semibold text-brand-olive">Explore a known weather event</h3>
+                                <h3 className="mt-1 text-sm font-semibold text-brand-olive">Explore a sample weather event</h3>
                                 <p className="mt-1 text-xs leading-relaxed text-brand-olive/60">{FEATURED_DEMO_INVESTIGATION.shortLocation} · {FEATURED_DEMO_INVESTIGATION.dateLabel}</p>
                             </div>
                         </div>
@@ -215,7 +224,7 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
                             disabled={isLoading}
                             className="shrink-0 border-brand-olive/20 bg-white text-brand-olive hover:bg-brand-offWhite"
                         >
-                            Run demo investigation <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                            Explore sample event <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                         </Button>
                     </div>
 
@@ -254,11 +263,11 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
                         disabled={!isFormValid || isLoading}
                         className="w-full h-14 bg-brand-olive hover:bg-brand-oliveDark text-white border-none text-base font-semibold transition-all rounded-xl mt-4 disabled:opacity-50"
                     >
-                        Preview available evidence <ArrowRight className="w-5 h-5 ml-2" />
+                        Check Available Evidence <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
 
                     <p className="flex items-center justify-center gap-2 text-center text-xs text-brand-olive/50 tracking-wide mt-1">
-                        <Database className="h-3.5 w-3.5" /> Demo only · No account, payment, or property data required.
+                        <Database className="h-3.5 w-3.5" /> Demo only. No account or payment information is required.
                     </p>
                 </div>
             </div>
@@ -282,20 +291,19 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
                         longitude={longitude}
                         date={date}
                         address={address}
-                        onUnlock={() => setUnlockOpen(true)}
                     />
                 )}
 
                 <div className="mt-6 flex flex-col justify-between gap-4 bg-brand-olive p-6 rounded-2xl shadow-sm sm:flex-row sm:items-center">
                     <div>
-                        <h3 className="text-lg font-bold text-white">Ready to assemble the evidence package?</h3>
-                        <p className="text-sm text-white/65 mt-1">Open the report preview to review its contents and download the demo package.</p>
+                        <h3 className="text-lg font-bold text-white">Review the complete property evidence report</h3>
+                        <p className="text-sm text-white/65 mt-1">See the organized timeline, detailed records, source appendix, methodology, and available imagery context.</p>
                     </div>
                     <Button
                         onClick={() => setUnlockOpen(true)}
                         className="bg-brand-lime text-brand-olive font-bold hover:bg-brand-limeLight px-6 h-11 rounded-xl text-sm"
                     >
-                        Preview evidence package
+                        Preview Full Report
                     </Button>
                 </div>
 
@@ -318,14 +326,14 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
     );
 }
 
-export default function EvidenceInvestigation({ onGetStartedRef }: EvidenceInvestigationProps) {
+export default function EvidenceInvestigation() {
     return (
         <Suspense fallback={
             <div className="w-full flex items-center justify-center p-12">
                 <LoadingState />
             </div>
         }>
-            <EvidenceInvestigationContent onGetStartedRef={onGetStartedRef} />
+            <EvidenceInvestigationContent />
         </Suspense>
     );
 }

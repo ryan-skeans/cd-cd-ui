@@ -15,6 +15,11 @@
     "src/lib/types.ts",
     "src/lib/evidence.ts",
     "src/lib/response-contract.ts",
+    "src/lib/sample-evidence.ts",
+    "src/lib/demo-workspace.ts",
+    "src/lib/demo-workspace-repository.ts",
+    "src/lib/routing.ts",
+    "src/lib/workspace-navigation.ts",
     "src/components/evidence-state-notice.tsx",
     "test/**/*.ts",
     "test/**/*.tsx"

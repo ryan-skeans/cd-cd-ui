@@ -145,6 +145,8 @@ export default function LocationPicker({
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-olive/50 pointer-events-none z-10" />
                 <Input
                     ref={searchInputRef}
+                    id="property-address-search"
+                    aria-label="Property address"
                     type="text"
                     placeholder="Search for a property address..."
                     value={searchQuery}
@@ -154,6 +156,8 @@ export default function LocationPicker({
                 />
                 {searchQuery && (
                     <button
+                        type="button"
+                        aria-label="Clear property address search"
                         onClick={clearSearch}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-olive/40 hover:text-brand-olive transition-colors z-10"
                     >
@@ -166,6 +170,7 @@ export default function LocationPicker({
                     <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-brand-gray/30 rounded-lg shadow-xl shadow-brand-olive/5 z-50 overflow-hidden">
                         {searchResults.map((result) => (
                             <button
+                                type="button"
                                 key={result.id}
                                 onClick={() => handleSelectResult(result)}
                                 className="w-full text-left px-4 py-3 text-sm hover:bg-zinc-50 transition-colors border-b border-brand-gray/20 last:border-b-0 flex items-start gap-3"
