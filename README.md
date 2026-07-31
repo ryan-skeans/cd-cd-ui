@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ClaimDefender
 
-## Getting Started
+ClaimDefender is an evidence-first historical weather research interface. A user selects a property and estimated loss date; the app presents the available observations, reports, warnings, precipitation windows, imagery catalog records, source status, and limitations returned by the paired Cloudflare Worker.
 
-First, run the development server:
+The product deliberately does not score claims, predict coverage, generate rebuttals, or treat a nearby report as proof of conditions at a structure. The source architecture and commercial-use evaluation are in [`docs/evidence-data-plan.md`](docs/evidence-data-plan.md).
+
+## Local development
+
+Use Node 20, configure the existing Mapbox and Worker environment variables, then run:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The paired Worker lives in `../cd-cf-middleware` and exposes `POST /initiateFreeSearch` using evidence schema `2.1`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verification
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run typecheck
+npm test
+npm run lint
+npm run build
+```
 
-## Learn More
+The UI tests cover complete, partial, and empty evidence presentation logic. The production build verifies the complete Next.js rendering graph. Provider and HTTP contract tests live in the Worker repository.
 
-To learn more about Next.js, take a look at the following resources:
+## Evidence experience
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The results dashboard includes:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- explicit badges for observed, reported, official, warning, radar-estimated, modeled, contextual, and inferred evidence;
+- station names and distances for actual observations;
+- exact supporting record provenance for headline maximum values;
+- distinct event-day, analysis, and antecedent-precipitation windows;
+- report source and distance/direction for Local Storm Reports;
+- a source-backed event timeline;
+- warning polygon context kept separate from confirmed event records;
+- partial-provider, no-record, and unavailable-data states;
+- a professional report preview and PDF source appendix.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deployment is intentionally separate from local verification. Neither `npm run build` nor the changes in this repository publish the UI or Worker.

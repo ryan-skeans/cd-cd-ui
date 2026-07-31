@@ -11,6 +11,7 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 interface LocationPickerProps {
     latitude: number | null;
     longitude: number | null;
+    selectedAddress?: string;
     onLocationChange: (lat: number, lng: number, address?: string) => void;
     searchInputRef?: React.Ref<HTMLInputElement>;
 }
@@ -24,6 +25,7 @@ interface SearchResult {
 export default function LocationPicker({
     latitude,
     longitude,
+    selectedAddress,
     onLocationChange,
     searchInputRef,
 }: LocationPickerProps) {
@@ -34,6 +36,19 @@ export default function LocationPicker({
     const [showResults, setShowResults] = useState(false);
     const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setSearchQuery(selectedAddress ?? "");
+    }, [selectedAddress]);
+
+    useEffect(() => {
+        if (latitude === null || longitude === null) return;
+        mapRef.current?.flyTo({
+            center: [longitude, latitude],
+            zoom: 16,
+            duration: 800,
+        });
+    }, [latitude, longitude]);
 
     // Close results dropdown when clicking outside
     useEffect(() => {

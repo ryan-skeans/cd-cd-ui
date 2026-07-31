@@ -10,7 +10,8 @@ import LoadingState from "@/components/loading-state";
 import ResultsDashboard from "@/components/results-dashboard";
 import DemoUnlockModal from "@/components/demo-unlock-modal";
 import OfficialReport from "@/components/official-report";
-import { ShieldCheck, MapPin, Calendar, ArrowRight, Database } from "lucide-react";
+import { FEATURED_DEMO_INVESTIGATION, featuredDemoDisplayDate } from "@/lib/demo-investigation";
+import { ShieldCheck, MapPin, Calendar, ArrowRight, Database, Sparkles } from "lucide-react";
 
 interface EvidenceInvestigationProps {
     onGetStartedRef?: (handler: () => void) => void;
@@ -37,20 +38,6 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
     const searchInputRef = useRef<HTMLInputElement>(null);
     const hasAutoRun = useRef(false);
 
-    const handleGetStarted = useCallback(() => {
-        setStep(1);
-        locationCardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-        setTimeout(() => {
-            searchInputRef.current?.focus();
-        }, 150);
-    }, []);
-
-    useEffect(() => {
-        if (onGetStartedRef) {
-            onGetStartedRef(handleGetStarted);
-        }
-    }, [onGetStartedRef, handleGetStarted]);
-
     const {
         mutate: runSearch,
         data: results,
@@ -59,6 +46,30 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
         error,
         reset,
     } = useEvidenceSearch();
+
+    const resetInvestigation = useCallback(() => {
+        router.replace("/", { scroll: false });
+        reset();
+        setStep(1);
+        setLatitude(null);
+        setLongitude(null);
+        setDate(undefined);
+        setAddress(undefined);
+        setUnlockOpen(false);
+        hasAutoRun.current = false;
+        setTimeout(() => {
+            locationCardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 0);
+        setTimeout(() => {
+            searchInputRef.current?.focus();
+        }, 150);
+    }, [reset, router]);
+
+    useEffect(() => {
+        if (onGetStartedRef) {
+            onGetStartedRef(resetInvestigation);
+        }
+    }, [onGetStartedRef, resetInvestigation]);
 
     useEffect(() => {
         if (urlLat && urlLng && urlDate) {
@@ -99,21 +110,35 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
         setAddress(displayAddress);
     };
 
-    const handleSubmit = () => {
-        if (latitude === null || longitude === null || !date) return;
-
+    const startInvestigation = ({
+        searchLatitude,
+        searchLongitude,
+        searchDate,
+        displayAddress,
+        estimatedDateOfDamage = searchDate.toISOString(),
+    }: {
+        searchLatitude: number;
+        searchLongitude: number;
+        searchDate: Date;
+        displayAddress?: string;
+        estimatedDateOfDamage?: string;
+    }) => {
+        setLatitude(searchLatitude);
+        setLongitude(searchLongitude);
+        setDate(searchDate);
+        setAddress(displayAddress);
         const params = new URLSearchParams(searchParams.toString());
-        params.set("lat", latitude.toString());
-        params.set("lng", longitude.toString());
-        params.set("date", date.toISOString());
+        params.set("lat", searchLatitude.toString());
+        params.set("lng", searchLongitude.toString());
+        params.set("date", estimatedDateOfDamage);
         router.push(`?${params.toString()}`, { scroll: false });
 
         reset(); // Clear previous results/errors
         hasAutoRun.current = true; // Prevent the useEffect from firing it again
         runSearch({
-            latitude,
-            longitude,
-            estimatedDateOfDamage: date.toISOString(),
+            latitude: searchLatitude,
+            longitude: searchLongitude,
+            estimatedDateOfDamage,
         }, {
             onSuccess: () => {
                 setStep(2);
@@ -124,6 +149,26 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
                     });
                 }, 200);
             }
+        });
+    };
+
+    const handleSubmit = () => {
+        if (latitude === null || longitude === null || !date) return;
+        startInvestigation({
+            searchLatitude: latitude,
+            searchLongitude: longitude,
+            searchDate: date,
+            displayAddress: address,
+        });
+    };
+
+    const handleDemoInvestigation = () => {
+        startInvestigation({
+            searchLatitude: FEATURED_DEMO_INVESTIGATION.latitude,
+            searchLongitude: FEATURED_DEMO_INVESTIGATION.longitude,
+            searchDate: featuredDemoDisplayDate(),
+            displayAddress: FEATURED_DEMO_INVESTIGATION.address,
+            estimatedDateOfDamage: FEATURED_DEMO_INVESTIGATION.estimatedDateOfDamage,
         });
     };
 
@@ -149,7 +194,29 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
                     <div className="border-b border-brand-gray/70 pb-5">
                         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-brand-olive/50">New investigation</p>
                         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-brand-olive">Locate the weather evidence.</h2>
-                        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-olive/60">Enter the property and the approximate date of loss. We&apos;ll prepare a source-labelled evidence preview using available weather records.</p>
+                        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-olive/60">Enter the property and the approximate date of loss. We&apos;ll separate nearby observations, reports, warning polygons, and contextual records into a sourced timeline.</p>
+                    </div>
+
+                    <div className="flex flex-col gap-4 rounded-2xl border border-brand-lime/60 bg-brand-lime/15 p-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-start gap-3">
+                            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-lime/50 text-brand-olive">
+                                <Sparkles className="h-4 w-4" aria-hidden="true" />
+                            </span>
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-brand-olive/50">Not sure what to search?</p>
+                                <h3 className="mt-1 text-sm font-semibold text-brand-olive">Explore a known weather event</h3>
+                                <p className="mt-1 text-xs leading-relaxed text-brand-olive/60">{FEATURED_DEMO_INVESTIGATION.shortLocation} · {FEATURED_DEMO_INVESTIGATION.dateLabel}</p>
+                            </div>
+                        </div>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleDemoInvestigation}
+                            disabled={isLoading}
+                            className="shrink-0 border-brand-olive/20 bg-white text-brand-olive hover:bg-brand-offWhite"
+                        >
+                            Run demo investigation <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                        </Button>
                     </div>
 
                     <div className="space-y-3">
@@ -160,6 +227,7 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
                             <LocationPicker
                                 latitude={latitude}
                                 longitude={longitude}
+                                selectedAddress={address}
                                 onLocationChange={handleLocationChange}
                                 searchInputRef={searchInputRef}
                             />
@@ -196,9 +264,9 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
             </div>
 
             <div className={`mt-6 flex flex-wrap justify-center gap-3 transition-opacity duration-300 ${step === 1 ? 'opacity-100' : 'opacity-0 hidden'}`}>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Weather archive records</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> NWS alert context</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Historical imagery availability</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Observed station records</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Reports and warning polygons</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Source-level limitations</span>
             </div>
 
 
@@ -233,8 +301,7 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
 
                 <div className="mt-4 text-center">
                     <Button variant="ghost" className="text-sm text-brand-olive/50" onClick={() => {
-                        router.push("?", { scroll: false });
-                        handleGetStarted();
+                        resetInvestigation();
                     }}>
                         Start New Search
                     </Button>
@@ -244,7 +311,7 @@ function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigation
 
             {/* ─── Unlocked report / Step 3 ─── */}
             <div ref={reportRef} className={`w-full transition-all duration-500 ease-in-out ${step === 3 ? 'opacity-100 translate-y-0 mt-8' : 'opacity-0 h-0 hidden translate-y-12'}`}>
-                {results && latitude !== null && longitude !== null && date && <OfficialReport report={{ data: results, latitude, longitude, date, address }} onStartNewSearch={() => { router.push("?", { scroll: false }); setUnlockOpen(false); setStep(1); handleGetStarted(); }} />}
+                {results && latitude !== null && longitude !== null && date && <OfficialReport report={{ data: results, latitude, longitude, date, address }} onStartNewSearch={resetInvestigation} />}
             </div>
             <DemoUnlockModal open={unlockOpen} onOpenChange={setUnlockOpen} onUnlock={() => { setUnlockOpen(false); setStep(3); setTimeout(() => reportRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); }} />
         </div>

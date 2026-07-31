@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { SearchPayload, SearchResponse } from "@/lib/types";
+import { parseEvidenceResponse } from "@/lib/response-contract";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -20,14 +21,7 @@ async function retrieveEvidence(
         );
     }
 
-    const data = await response.json();
-
-    // Validate the source-record payload used by the evidence workspace.
-    if (!data?.noaa || !data?.satellite) {
-        throw new Error("Invalid response: missing evidence records");
-    }
-
-    return data as SearchResponse;
+    return parseEvidenceResponse(await response.json());
 }
 
 export function useEvidenceSearch() {

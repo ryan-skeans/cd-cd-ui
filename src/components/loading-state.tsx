@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { Radar, Satellite, Cloud, Shield } from "lucide-react";
+import { Radar, Database, Cloud, Shield } from "lucide-react";
 
 export default function LoadingState() {
     return (
@@ -37,8 +37,8 @@ export default function LoadingState() {
                         Retrieving weather evidence
                     </h3>
                     <p className="text-sm text-brand-olive/60 max-w-md">
-                        Retrieving available weather observations, alert context, and imagery
-                        records for the selected property. This may take 10–15 seconds.
+                        Checking independent historical sources for the selected property.
+                        Available results will remain useful if one provider is unavailable.
                     </p>
                 </div>
 
@@ -48,16 +48,16 @@ export default function LoadingState() {
                         <Cloud className="w-4 h-4 text-brand-olive animate-pulse" />
                         <div className="flex-1">
                             <div className="text-xs text-brand-olive/60 mb-1">
-                                Retrieving weather archive observations…
+                                Finding nearby observed station conditions…
                             </div>
                             <Skeleton className="h-2 w-full bg-brand-gray/50" />
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Satellite className="w-4 h-4 text-brand-olive/60 animate-pulse" style={{ animationDelay: "0.7s" }} />
+                        <Database className="w-4 h-4 text-brand-olive/60 animate-pulse" style={{ animationDelay: "0.7s" }} />
                         <div className="flex-1">
                             <div className="text-xs text-brand-olive/60 mb-1">
-                                Checking imagery archive availability…
+                                Reviewing local reports and official records…
                             </div>
                             <Skeleton className="h-2 w-3/4 bg-brand-gray/50" />
                         </div>
@@ -66,7 +66,7 @@ export default function LoadingState() {
                         <Shield className="w-4 h-4 text-brand-olive/30 animate-pulse" style={{ animationDelay: "1.4s" }} />
                         <div className="flex-1">
                             <div className="text-xs text-brand-olive/60 mb-1">
-                                Organizing the evidence preview…
+                                Checking warning coverage and building the timeline…
                             </div>
                             <Skeleton className="h-2 w-1/2 bg-brand-gray/50" />
                         </div>

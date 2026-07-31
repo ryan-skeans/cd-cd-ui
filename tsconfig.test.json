@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2021",
+    "lib": ["es2021", "dom"],
+    "strict": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "rootDir": ".",
+    "outDir": ".test-dist",
+    "types": ["node"]
+  },
+  "include": [
+    "src/lib/types.ts",
+    "src/lib/evidence.ts",
+    "src/lib/response-contract.ts",
+    "src/components/evidence-state-notice.tsx",
+    "test/**/*.ts",
+    "test/**/*.tsx"
+  ]
+}

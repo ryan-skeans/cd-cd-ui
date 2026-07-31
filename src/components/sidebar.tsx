@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { FileSearch, MapPin, Radar, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 
 interface SidebarProps {
     onGetStarted?: () => void;
@@ -16,7 +17,16 @@ export default function Sidebar({ onGetStarted }: SidebarProps) {
         <aside className="w-full shrink-0 border-b border-white/10 bg-brand-olive text-white lg:sticky lg:top-0 lg:h-screen lg:w-[420px] lg:border-b-0 xl:w-[470px]">
             <div className="flex h-full flex-col px-4 py-4 sm:px-8 lg:px-10 lg:py-10">
                 <header className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
+                    <Link
+                        href="/"
+                        onClick={(event) => {
+                            if (onGetStarted) {
+                                event.preventDefault();
+                                onGetStarted();
+                            }
+                        }}
+                        className="flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime focus-visible:ring-offset-2 focus-visible:ring-offset-brand-olive"
+                    >
                         <div className="grid h-9 w-9 place-items-center rounded-lg border border-white/15 bg-white/5">
                             <ShieldCheck className="h-5 w-5 text-brand-lime" />
                         </div>
@@ -24,7 +34,7 @@ export default function Sidebar({ onGetStarted }: SidebarProps) {
                             <span className="block text-base font-semibold tracking-tight">ClaimDefender</span>
                             <span className="block text-[10px] uppercase tracking-[0.16em] text-white/50">Weather evidence</span>
                         </div>
-                    </div>
+                    </Link>
                     <Button onClick={onGetStarted} className="h-9 rounded-lg bg-brand-lime px-4 text-xs font-semibold text-brand-olive hover:bg-brand-limeLight">
                         Start investigation
                     </Button>
