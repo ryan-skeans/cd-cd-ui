@@ -150,7 +150,7 @@ export default function LocationPicker({
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onFocus={() => searchResults.length > 0 && setShowResults(true)}
-                    className="w-full pl-10 pr-10 py-2.5 h-11 bg-white border border-brand-gray/50 rounded-lg text-sm text-brand-olive placeholder:text-brand-olive/40 focus-visible:ring-brand-olive/50 hover:bg-zinc-50 transition-all shadow-none"
+                    className="h-11 w-full rounded-lg border border-brand-gray/50 bg-white py-2.5 pl-10 pr-10 text-sm text-brand-olive shadow-none transition-colors placeholder:text-brand-olive/40 hover:bg-zinc-50 focus:outline-none focus:ring-0 focus-visible:border-brand-olive focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
                 {searchQuery && (
                     <button
