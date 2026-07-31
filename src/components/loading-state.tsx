@@ -34,11 +34,11 @@ export default function LoadingState() {
 
                 <div className="text-center space-y-2">
                     <h3 className="text-lg font-bold text-brand-olive">
-                        Scanning Meteorological & Satellite Data
+                        Retrieving weather evidence
                     </h3>
                     <p className="text-sm text-brand-olive/60 max-w-md">
-                        Cross-referencing NOAA weather records and Earth observation
-                        satellite imagery. This may take 10-15 seconds...
+                        Retrieving available weather observations, alert context, and imagery
+                        records for the selected property. This may take 10–15 seconds.
                     </p>
                 </div>
 
@@ -48,7 +48,7 @@ export default function LoadingState() {
                         <Cloud className="w-4 h-4 text-brand-olive animate-pulse" />
                         <div className="flex-1">
                             <div className="text-xs text-brand-olive/60 mb-1">
-                                Querying NOAA Storm Database...
+                                Retrieving weather archive observations…
                             </div>
                             <Skeleton className="h-2 w-full bg-brand-gray/50" />
                         </div>
@@ -57,7 +57,7 @@ export default function LoadingState() {
                         <Satellite className="w-4 h-4 text-brand-olive/60 animate-pulse" style={{ animationDelay: "0.7s" }} />
                         <div className="flex-1">
                             <div className="text-xs text-brand-olive/60 mb-1">
-                                Searching Earth-Search STAC Catalog...
+                                Checking imagery archive availability…
                             </div>
                             <Skeleton className="h-2 w-3/4 bg-brand-gray/50" />
                         </div>
@@ -66,7 +66,7 @@ export default function LoadingState() {
                         <Shield className="w-4 h-4 text-brand-olive/30 animate-pulse" style={{ animationDelay: "1.4s" }} />
                         <div className="flex-1">
                             <div className="text-xs text-brand-olive/60 mb-1">
-                                Computing Viability Score...
+                                Organizing the evidence preview…
                             </div>
                             <Skeleton className="h-2 w-1/2 bg-brand-gray/50" />
                         </div>

@@ -15,16 +15,16 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Claim Defender AI — Validate Property Damage Claims Instantly",
+  title: "ClaimDefender — Property-specific weather evidence",
   description:
-    "Verify weather-related roof & property damage claims using historical meteorological data (NOAA) and satellite imagery. AI-powered truth scoring for insurers, adjusters, and contractors.",
+    "Prepare a source-labelled weather evidence package for a property damage investigation using available weather archives, NWS alert context, and imagery records.",
   keywords: [
-    "property damage claims",
-    "roof damage verification",
-    "NOAA weather data",
-    "satellite imagery",
-    "insurance fraud detection",
-    "claim verification",
+    "property damage evidence",
+    "weather evidence package",
+    "weather archive data",
+    "NWS alert records",
+    "historical imagery",
+    "claim documentation",
   ],
 };
 
@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

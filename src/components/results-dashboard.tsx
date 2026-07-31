@@ -1,475 +1,310 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import { useState } from "react";
 import { format } from "date-fns";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import {
-    Wind,
-    CloudHail,
-    Droplets,
     AlertTriangle,
-    ShieldCheck,
-    ShieldX,
-    Copy,
+    CalendarDays,
     Check,
-    Satellite,
-    Lock,
-    ArrowRight,
-    Sparkles,
-    FileText,
+    CheckCircle2,
+    CloudHail,
+    Copy,
     Eye,
+    FileText,
+    ImageOff,
+    Lock,
+    MapPin,
+    Radar,
+    Satellite,
+    Wind,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+    buildEvidenceSummary,
+    displayHail,
+    displayWind,
+    formatMeasurement,
+    hasImagery,
+    readableEvidenceDate,
+} from "@/lib/evidence";
 import { SearchResponse } from "@/lib/types";
 
 interface ResultsDashboardProps {
     data: SearchResponse;
+    latitude: number;
+    longitude: number;
+    date: Date;
+    address?: string;
+    onUnlock?: () => void;
 }
 
-function getScoreColor(score: number): string {
-    if (score >= 70) return "text-emerald-400";
-    if (score >= 40) return "text-amber-400";
-    return "text-red-400";
+function imageUrl(value?: string) {
+    if (!value || value.startsWith("http")) return value;
+    return typeof window !== "undefined" && window.location.hostname === "localhost"
+        ? `http://localhost:8787${value.startsWith("/") ? "" : "/"}${value}`
+        : value;
 }
 
-function getScoreLabel(score: number): string {
-    if (score >= 70) return "High Viability";
-    if (score >= 40) return "Moderate Viability";
-    return "Low Viability";
-}
-
-function getScoreIcon(score: number) {
-    if (score >= 70) return <ShieldCheck className="w-6 h-6 text-emerald-400" />;
-    if (score >= 40)
-        return <AlertTriangle className="w-6 h-6 text-amber-400" />;
-    return <ShieldX className="w-6 h-6 text-red-400" />;
-}
-
-function getProgressColor(score: number): string {
-    if (score >= 70)
-        return "[&>div]:bg-gradient-to-r [&>div]:from-emerald-500 [&>div]:to-emerald-400";
-    if (score >= 40)
-        return "[&>div]:bg-gradient-to-r [&>div]:from-amber-500 [&>div]:to-amber-400";
-    return "[&>div]:bg-gradient-to-r [&>div]:from-red-500 [&>div]:to-red-400";
-}
-
-function getScoreBg(score: number): string {
-    if (score >= 70) return "from-emerald-500/10 to-emerald-500/5";
-    if (score >= 40) return "from-amber-500/10 to-amber-500/5";
-    return "from-red-500/10 to-red-500/5";
-}
-
-export default function ResultsDashboard({ data }: ResultsDashboardProps) {
+export default function ResultsDashboard({
+    data,
+    latitude,
+    longitude,
+    date,
+    address,
+    onUnlock,
+}: ResultsDashboardProps) {
     const [copied, setCopied] = useState(false);
+    const summary = buildEvidenceSummary(data);
+    const imageryAvailable = hasImagery(data);
+    const property = address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
 
-    const handleCopy = async () => {
+    const copySummary = async () => {
         try {
-            await navigator.clipboard.writeText(data.evidenceTemplate);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2500);
+            await navigator.clipboard.writeText(summary);
         } catch {
-            // Fallback
             const textarea = document.createElement("textarea");
-            textarea.value = data.evidenceTemplate;
+            textarea.value = summary;
             document.body.appendChild(textarea);
             textarea.select();
             document.execCommand("copy");
-            document.body.removeChild(textarea);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2500);
+            textarea.remove();
         }
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 2000);
     };
 
-    const safeFormatDate = (dateStr: string | undefined | null): string => {
-        if (!dateStr) return "N/A";
-        // Gracefully handle explanatory backend messages
-        if (dateStr.includes("Not available") || dateStr === "Unknown") {
-            return dateStr;
-        }
-        try {
-            const parsed = new Date(dateStr);
-            if (isNaN(parsed.getTime())) return "N/A";
-            return format(parsed, "MMM d, yyyy 'at' h:mm a");
-        } catch {
-            return "N/A";
-        }
-    };
+    const observations = [
+        {
+            icon: Wind,
+            label: "Peak wind gust",
+            value: displayWind(data.noaa),
+            detail: "Maximum returned in the search window",
+            source: "Weather archive",
+        },
+        {
+            icon: CloudHail,
+            label: "Reported hail",
+            value: displayHail(data.noaa),
+            detail: "Storm-report context near the property",
+            source: "NWS local reports",
+        },
+        {
+            icon: Radar,
+            label: "Precipitation",
+            value: formatMeasurement(data.noaa.totalPrecipitationInches, "in"),
+            detail: "Total returned for the seven-day window",
+            source: "Weather archive",
+        },
+        {
+            icon: AlertTriangle,
+            label: "Severe alerts",
+            value: data.noaa.hasSevereAlerts ? "Available" : "None found",
+            detail: "Archived alert search result",
+            source: "NWS",
+        },
+    ];
 
-    const beforeDate = safeFormatDate(data.satellite?.beforeDate);
-    const afterDate = safeFormatDate(data.satellite?.afterDate);
-
-    // Prepend the API base URL for image proxy paths
-    const imageBase =
-        typeof window !== "undefined" && window.location.hostname === "localhost"
-            ? "http://localhost:8787"
-            : "";
-
-    const getImageUrl = (url?: string) => {
-        if (!url) return "";
-
-        // On localhost, strip Cloudflare image resizing prefix since CF isn't deployed locally
-        if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-            if (url.startsWith("/cdn-cgi/image/")) {
-                const httpIdx = url.indexOf("http");
-                if (httpIdx !== -1) {
-                    return url.substring(httpIdx);
-                }
-            }
-        }
-
-        if (url.startsWith("http")) return url;
-        return `${imageBase}${url.startsWith("/") ? "" : "/"}${url}`;
-    };
+    const availability = [
+        {
+            label: "Weather observations",
+            status: "Available",
+            detail: "Wind, hail, and precipitation records returned",
+        },
+        {
+            label: "Alert context",
+            status: data.noaa.hasSevereAlerts ? "Available" : "None found",
+            detail: "NWS severe-alert archive searched",
+        },
+        {
+            label: "Imagery pair",
+            status: imageryAvailable ? "Available" : "Incomplete",
+            detail: imageryAvailable
+                ? "Before- and after-event captures located"
+                : "A complete comparison pair was not located",
+        },
+    ];
 
     return (
-        <div className="w-full max-w-4xl mx-auto space-y-6 animate-in fade-in-0 slide-in-from-bottom-6 duration-700">
-            {/* ─── Truth Score ─── */}
-            <Card className="bg-white border-brand-gray/30 text-brand-olive shadow-sm overflow-hidden">
-                <div className={`bg-gradient-to-br ${getScoreBg(data.viabilityScore)} p-1`}>
-                    <CardHeader className="pb-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                {getScoreIcon(data.viabilityScore)}
-                                <div>
-                                    <CardTitle className="text-xl font-bold">
-                                        Claim Viability Score
-                                    </CardTitle>
-                                    <CardDescription className="text-brand-olive/60">
-                                        AI-generated confidence in the legitimacy of this claim
-                                    </CardDescription>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <div
-                                    className={`text-5xl font-black tracking-tight ${getScoreColor(
-                                        data.viabilityScore
-                                    )}`}
-                                >
-                                    {data.viabilityScore}
-                                </div>
-                                <div
-                                    className={`text-sm font-medium ${getScoreColor(
-                                        data.viabilityScore
-                                    )}`}
-                                >
-                                    {getScoreLabel(data.viabilityScore)}
-                                </div>
-                            </div>
+        <section className="mx-auto w-full max-w-4xl space-y-5 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+            <header className="rounded-3xl border border-brand-gray/60 bg-white p-6 shadow-[0_18px_45px_-35px_rgba(51,54,41,0.45)] sm:p-8">
+                <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+                    <div>
+                        <div className="inline-flex items-center gap-2 rounded-full bg-brand-lime/30 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.13em] text-brand-olive">
+                            <Radar className="h-3.5 w-3.5" /> Evidence snapshot
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <Progress
-                            value={data.viabilityScore}
-                            className={`h-3 bg-secondary/50 rounded-full ${getProgressColor(
-                                data.viabilityScore
-                            )}`}
-                        />
-                        <div className="flex justify-between mt-2 text-xs text-brand-olive/60">
-                            <span>0 — Not Viable</span>
-                            <span>50 — Uncertain</span>
-                            <span>100 — Highly Viable</span>
-                        </div>
-                    </CardContent>
+                        <h2 className="mt-4 text-2xl font-semibold tracking-tight text-brand-olive sm:text-3xl">
+                            Available records for review
+                        </h2>
+                        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-olive/60">
+                            Source-oriented observations for the selected property and loss date. They are not a coverage decision or damage finding.
+                        </p>
+                    </div>
+                    <div className="shrink-0 rounded-xl border border-brand-gray/70 bg-brand-offWhite px-4 py-3">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-olive/45">
+                            Records searched
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-brand-olive">Weather archive · NWS · imagery archive</p>
+                    </div>
                 </div>
+
+                <div className="mt-6 grid gap-3 border-t border-brand-gray/70 pt-5 sm:grid-cols-2">
+                    <div className="flex items-start gap-2.5 text-sm text-brand-olive/70">
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-olive" />
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-brand-olive/45">Property</p>
+                            <p className="mt-0.5 font-medium text-brand-olive">{property}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-sm text-brand-olive/70">
+                        <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-brand-olive" />
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-brand-olive/45">Approximate loss date</p>
+                            <p className="mt-0.5 font-medium text-brand-olive">{format(date, "MMMM d, yyyy")}</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <Card className="border-brand-gray/60 bg-white text-brand-olive shadow-none">
+                <CardContent className="p-5 sm:p-6">
+                    <div className="mb-5">
+                        <h3 className="font-semibold">Evidence availability</h3>
+                        <p className="mt-1 text-xs text-brand-olive/55">
+                            A search result describes record availability, not whether damage occurred.
+                        </p>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                        {availability.map((item) => (
+                            <div key={item.label} className="rounded-xl border border-brand-gray/70 bg-brand-offWhite/70 p-4">
+                                <div className="flex items-center justify-between gap-2">
+                                    <p className="text-xs font-semibold text-brand-olive">{item.label}</p>
+                                    {item.status === "Available" ? (
+                                        <CheckCircle2 className="h-4 w-4 shrink-0 text-brand-olive" />
+                                    ) : (
+                                        <span className="h-2 w-2 shrink-0 rounded-full bg-brand-olive/25" />
+                                    )}
+                                </div>
+                                <p className="mt-3 text-sm font-semibold text-brand-olive">{item.status}</p>
+                                <p className="mt-1 text-[11px] leading-relaxed text-brand-olive/50">{item.detail}</p>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
             </Card>
 
-            {/* ─── NOAA + Satellite side-by-side ─── */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Meteorological Data Card */}
-                <Card className="bg-white border-brand-gray/30 text-brand-olive shadow-sm">
-                    <CardHeader>
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                                <Wind className="w-4 h-4 text-blue-500" />
+            <Card className="border-brand-gray/60 bg-white text-brand-olive shadow-none">
+                <CardContent className="p-5 sm:p-6">
+                    <div className="mb-5 flex items-start justify-between gap-3">
+                        <div>
+                            <h3 className="font-semibold">Weather observations</h3>
+                            <p className="mt-1 text-xs text-brand-olive/55">Measurements and archive results returned by the search.</p>
+                        </div>
+                        <span className="rounded-full border border-brand-gray/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-brand-olive/55">
+                            Source data
+                        </span>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        {observations.map(({ icon: Icon, label, value, detail, source }) => (
+                            <div key={label} className="rounded-xl border border-brand-gray/70 bg-brand-offWhite/70 p-4">
+                                <div className="mb-5 flex items-center justify-between">
+                                    <Icon className="h-4 w-4 text-brand-olive" />
+                                    <span className="rounded-full border border-brand-gray bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-brand-olive/50">
+                                        {source}
+                                    </span>
+                                </div>
+                                <p className="text-xs text-brand-olive/55">{label}</p>
+                                <p className="mt-1 text-lg font-semibold tracking-tight text-brand-olive">{value}</p>
+                                <p className="mt-1 text-[11px] leading-relaxed text-brand-olive/45">{detail}</p>
                             </div>
+                        ))}
+                    </div>
+                    {data.noaa.tornadoReported && (
+                        <div className="mt-4 flex gap-3 rounded-xl border border-amber-500/25 bg-amber-50 p-3 text-sm text-brand-olive">
+                            <AlertTriangle className="h-4 w-4 shrink-0 text-amber-700" />
+                            <span>
+                                <strong>Tornado report context:</strong> a report was found in the search area. Review its location and time before relying on it.
+                            </span>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            <div className="grid gap-5 lg:grid-cols-[1.15fr_.85fr]">
+                <Card className="border-brand-gray/60 bg-white text-brand-olive shadow-none">
+                    <CardContent className="p-5 sm:p-6">
+                        <div className="flex items-start justify-between gap-3">
                             <div>
-                                <CardTitle className="text-base text-brand-olive">
-                                    Meteorological Data
-                                </CardTitle>
-                                <CardDescription className="text-brand-olive/60">NOAA Storm Records</CardDescription>
+                                <h3 className="flex items-center gap-2 font-semibold">
+                                    <Satellite className="h-4 w-4" /> Imagery availability
+                                </h3>
+                                <p className="mt-1 text-xs text-brand-olive/55">
+                                    Archived captures are shown for visual context only.
+                                </p>
                             </div>
+                            <span className="rounded-full border border-brand-gray px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-brand-olive/50">
+                                Imagery archive
+                            </span>
                         </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {/* Wind */}
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-50 border border-brand-gray/30">
-                            <div className="flex items-center gap-3">
-                                <Wind className="w-5 h-5 text-sky-400" />
-                                <div>
-                                    <div className="text-sm font-medium">Max Wind Gust</div>
-                                    <div className="text-xs text-brand-olive/60">
-                                        Peak recorded wind speed
+                        <div className="mt-5 grid grid-cols-2 gap-3">
+                            {[
+                                ["Before event", data.satellite?.beforeThumbnailUrl, readableEvidenceDate(data.satellite?.beforeDate)],
+                                ["After event", data.satellite?.afterThumbnailUrl, readableEvidenceDate(data.satellite?.afterDate)],
+                            ].map(([label, image, imageDate]) => (
+                                <div key={label}>
+                                    <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-brand-gray/70 bg-brand-offWhite">
+                                        {image ? (
+                                            <img src={imageUrl(image)} alt={`${label} imagery preview`} className="h-full w-full object-cover" />
+                                        ) : (
+                                            <div className="grid h-full place-items-center text-brand-olive/30">
+                                                <ImageOff className="h-6 w-6" />
+                                            </div>
+                                        )}
+                                        {image && <div className="absolute inset-0 bg-gradient-to-t from-brand-olive/35 to-transparent" />}
                                     </div>
+                                    <p className="mt-2 text-xs font-medium text-brand-olive">{label}</p>
+                                    <p className="mt-0.5 text-[11px] text-brand-olive/50">{imageDate}</p>
                                 </div>
-                            </div>
-                            <div className="text-lg font-bold font-mono text-brand-olive">
-                                {data.noaa.obfuscatedWind}
-                            </div>
+                            ))}
                         </div>
-
-                        {/* Hail */}
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-50 border border-brand-gray/30">
-                            <div className="flex items-center gap-3">
-                                <CloudHail className="w-5 h-5 text-indigo-500" />
-                                <div>
-                                    <div className="text-sm font-medium">Max Hail Size</div>
-                                    <div className="text-xs text-brand-olive/60">
-                                        Largest confirmed hailstone
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="text-lg font-bold font-mono text-brand-olive">
-                                {data.noaa.obfuscatedHail}
-                            </div>
-                        </div>
-
-                        {/* Precipitation */}
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-50 border border-brand-gray/30">
-                            <div className="flex items-center gap-3">
-                                <Droplets className="w-5 h-5 text-cyan-500" />
-                                <div>
-                                    <div className="text-sm font-medium">Total Precipitation</div>
-                                    <div className="text-xs text-brand-olive/60">
-                                        Rainfall ±1 week of damage date
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="text-lg font-bold font-mono text-brand-olive">
-                                {data.noaa.totalPrecipitationInches != null
-                                    ? `${data.noaa.totalPrecipitationInches.toFixed(2)} in`
-                                    : "N/A"}
-                            </div>
-                        </div>
-
-                        {/* Severe Alerts */}
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-50 border border-brand-gray/30">
-                            <div className="flex items-center gap-3">
-                                <AlertTriangle
-                                    className={`w-5 h-5 ${data.noaa.hasSevereAlerts
-                                        ? "text-amber-500"
-                                        : "text-brand-gray"
-                                        }`}
-                                />
-                                <div>
-                                    <div className="text-sm font-medium">Severe Alerts</div>
-                                    <div className="text-xs text-brand-olive/60">
-                                        NWS severe weather alerts
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                className={`text-sm font-semibold px-3 py-1 rounded-full ${data.noaa.hasSevereAlerts
-                                    ? "bg-amber-500/10 text-amber-400"
-                                    : "bg-zinc-500/10 text-muted-foreground"
-                                    }`}
-                            >
-                                {data.noaa.hasSevereAlerts ? "Yes" : "None Found"}
-                            </div>
-                        </div>
-
-                        {/* Tornado Reported Badge */}
-                        {data.noaa.tornadoReported && (
-                            <div className="flex items-center justify-between p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                                <div className="flex items-center gap-3">
-                                    <AlertTriangle className="w-5 h-5 text-red-500 animate-pulse" />
-                                    <div>
-                                        <div className="text-sm font-medium text-red-500">Tornado</div>
-                                        <div className="text-xs text-red-500/80">
-                                            Proximity vortex reported
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="text-xs font-bold px-3 py-1 rounded-full bg-red-500 text-white uppercase tracking-wider">
-                                    Reported
-                                </div>
-                            </div>
-                        )}
                     </CardContent>
                 </Card>
 
-                {/* Satellite Evidence Card */}
-                <Card className="bg-white border-brand-gray/30 text-brand-olive shadow-sm">
-                    <CardHeader>
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                                <Satellite className="w-4 h-4 text-purple-400" />
-                            </div>
-                            <div>
-                                <CardTitle className="text-base text-brand-olive">
-                                    Satellite Evidence
-                                </CardTitle>
-                                <CardDescription className="text-brand-olive/60">
-                                    Before & After Comparison
-                                </CardDescription>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-2 gap-3">
-                            {/* Before */}
-                            <div className="space-y-2">
-                                <div className="text-xs font-medium text-brand-olive/60 uppercase tracking-wider">
-                                    Before
-                                </div>
-                                <div className="relative aspect-square rounded-lg overflow-hidden border border-brand-gray/30 bg-zinc-50">
-                                    {data.satellite?.beforeThumbnailUrl ? (
-                                        // eslint-disable-next-line @next/next/no-img-element
-                                        <img
-                                            src={getImageUrl(data.satellite.beforeThumbnailUrl)}
-                                            alt="Satellite view before damage"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center">
-                                            <Eye className="w-8 h-8 text-brand-olive/20 mb-2" />
-                                            {data.satellite?.beforeDate?.includes("Not available") && (
-                                                <span className="text-[10px] text-brand-olive/50 leading-tight">
-                                                    {data.satellite.beforeDate}
-                                                </span>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="text-xs text-brand-olive/60 mt-2 line-clamp-2">
-                                    {data.satellite?.beforeDate?.includes("Not available") ? "No Imagery" : beforeDate}
-                                </div>
-                            </div>
-
-                            {/* After */}
-                            <div className="space-y-2">
-                                <div className="text-xs font-medium text-brand-olive/60 uppercase tracking-wider">
-                                    After
-                                </div>
-                                <div className="relative aspect-square rounded-lg overflow-hidden border border-brand-gray/30 bg-zinc-50">
-                                    {data.satellite?.afterThumbnailUrl ? (
-                                        // eslint-disable-next-line @next/next/no-img-element
-                                        <img
-                                            src={getImageUrl(data.satellite.afterThumbnailUrl)}
-                                            alt="Satellite view after damage"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center">
-                                            <Eye className="w-8 h-8 text-brand-olive/20 mb-2" />
-                                            {data.satellite?.afterDate?.includes("Not available") && (
-                                                <span className="text-[10px] text-brand-olive/50 leading-tight">
-                                                    {data.satellite.afterDate}
-                                                </span>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="text-xs text-brand-olive/60 mt-2 line-clamp-2">
-                                    {data.satellite?.afterDate?.includes("Not available") ? "No Imagery" : afterDate}
-                                </div>
-                            </div>
-                        </div>
+                <Card className="border-brand-gray/60 bg-brand-olive text-white shadow-none">
+                    <CardContent className="flex h-full flex-col p-5 sm:p-6">
+                        <Lock className="h-5 w-5 text-brand-lime" />
+                        <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-lime">Evidence package preview</p>
+                        <h3 className="mt-2 text-xl font-semibold tracking-tight">A structured investigation file.</h3>
+                        <ul className="mt-4 space-y-2 text-sm text-white/70">
+                            <li>• Source-labelled weather observations</li>
+                            <li>• Property and date-of-loss record</li>
+                            <li>• Imagery availability and caveats</li>
+                            <li>• Downloadable demo report</li>
+                        </ul>
+                        <Button onClick={onUnlock} className="mt-6 bg-brand-lime text-brand-olive hover:bg-brand-limeLight lg:mt-auto">
+                            Preview evidence package <Eye className="ml-2 h-4 w-4" />
+                        </Button>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* ─── Factual Rebuttal Card ─── */}
-            <Card className="bg-white border-brand-gray/30 text-brand-olive shadow-sm">
-                <CardHeader>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                                <FileText className="w-4 h-4 text-emerald-400" />
-                            </div>
-                            <div>
-                                <CardTitle className="text-base text-brand-olive">
-                                    Evidence Documentation
-                                </CardTitle>
-                                <CardDescription className="text-brand-olive/60">
-                                    Formal investigative summary for claim records
-                                </CardDescription>
-                            </div>
+            <Card className="border-brand-gray/60 bg-white text-brand-olive shadow-none">
+                <CardContent className="p-5 sm:p-6">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                            <h3 className="flex items-center gap-2 font-semibold">
+                                <FileText className="h-4 w-4" /> Evidence summary
+                            </h3>
+                            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-olive/70">{summary}</p>
                         </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleCopy}
-                            className="gap-2 border-brand-gray/30 hover:bg-zinc-50 bg-white text-brand-olive transition-all"
-                        >
-                            {copied ? (
-                                <>
-                                    <Check className="w-4 h-4 text-emerald-400" />
-                                    <span className="text-emerald-400">Copied</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Copy className="w-4 h-4" />
-                                    Copy
-                                </>
-                            )}
+                        <Button variant="outline" size="sm" onClick={copySummary} className="shrink-0 border-brand-gray text-brand-olive">
+                            {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
+                            {copied ? "Copied" : "Copy summary"}
                         </Button>
                     </div>
-                </CardHeader>
-                <CardContent>
-                    <div className="relative p-5 rounded-lg bg-zinc-50 border border-brand-gray/30 font-mono text-sm leading-relaxed text-brand-olive/80">
-                        {/* Decorative "document" lines */}
-                        <div className="absolute top-0 left-0 w-1 h-full bg-primary/30 rounded-l-lg" />
-                        <p className="pl-4">{data.evidenceTemplate}</p>
-                    </div>
                 </CardContent>
             </Card>
-
-            {/* ─── Upgrade CTA ─── */}
-            <Card className="bg-white border-brand-gray/30 text-brand-olive shadow-sm relative overflow-hidden">
-                {/* Blurred premium content preview */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white z-10" />
-                <CardContent className="p-6">
-                    <div className="relative">
-                        {/* Simulated locked content */}
-                        <div className="space-y-3 blur-[6px] select-none pointer-events-none opacity-40">
-                            <div className="flex items-center gap-2">
-                                <div className="h-4 w-4 bg-brand-olive/20 rounded" />
-                                <div className="h-3 w-48 bg-brand-olive/10 rounded" />
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="h-32 bg-brand-olive/5 rounded-lg border border-brand-gray/20" />
-                                <div className="h-32 bg-brand-olive/5 rounded-lg border border-brand-gray/20" />
-                            </div>
-                            <div className="space-y-2">
-                                <div className="h-3 w-full bg-brand-olive/10 rounded" />
-                                <div className="h-3 w-3/4 bg-brand-olive/10 rounded" />
-                                <div className="h-3 w-5/6 bg-brand-olive/10 rounded" />
-                            </div>
-                        </div>
-
-                        {/* Overlay CTA */}
-                        <div className="absolute inset-0 flex items-center justify-center z-20">
-                            <div className="text-center space-y-4 p-6">
-                                <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                                    <Lock className="w-7 h-7 text-primary" />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-brand-olive">
-                                        Unlock Full Intelligence Report
-                                    </h3>
-                                    <p className="text-sm text-brand-olive/70 mt-1 max-w-sm">
-                                        Upgrade to <span className="text-brand-lime font-bold">Pro</span> to access
-                                        unblurred satellite imagery, raw NOAA data, detailed change
-                                        detection analysis, and downloadable PDF reports.
-                                    </p>
-                                </div>
-                                <Button className="gap-2 bg-brand-lime text-brand-olive hover:bg-brand-limeLight font-bold">
-                                    <Sparkles className="w-4 h-4" />
-                                    Upgrade to Pro
-                                    <ArrowRight className="w-4 h-4" />
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
+        </section>
     );
 }

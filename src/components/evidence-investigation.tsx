@@ -3,18 +3,20 @@
 import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useFreeSearch } from "@/hooks/use-free-search";
+import { useEvidenceSearch } from "@/hooks/use-evidence-search";
 import LocationPicker from "@/components/location-picker";
 import DatePicker from "@/components/date-picker";
 import LoadingState from "@/components/loading-state";
 import ResultsDashboard from "@/components/results-dashboard";
-import { Shield, MapPin, Calendar, ArrowRight, Lock } from "lucide-react";
+import DemoUnlockModal from "@/components/demo-unlock-modal";
+import OfficialReport from "@/components/official-report";
+import { ShieldCheck, MapPin, Calendar, ArrowRight, Database } from "lucide-react";
 
-interface ViabilityCheckerProps {
+interface EvidenceInvestigationProps {
     onGetStartedRef?: (handler: () => void) => void;
 }
 
-function ViabilityCheckerContent({ onGetStartedRef }: ViabilityCheckerProps) {
+function EvidenceInvestigationContent({ onGetStartedRef }: EvidenceInvestigationProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -26,8 +28,11 @@ function ViabilityCheckerContent({ onGetStartedRef }: ViabilityCheckerProps) {
     const [latitude, setLatitude] = useState<number | null>(urlLat ? parseFloat(urlLat) : null);
     const [longitude, setLongitude] = useState<number | null>(urlLng ? parseFloat(urlLng) : null);
     const [date, setDate] = useState<Date | undefined>(urlDate ? new Date(urlDate) : undefined);
+    const [address, setAddress] = useState<string | undefined>();
+    const [unlockOpen, setUnlockOpen] = useState(false);
 
     const resultsRef = useRef<HTMLDivElement>(null);
+    const reportRef = useRef<HTMLDivElement>(null);
     const locationCardRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
     const hasAutoRun = useRef(false);
@@ -53,7 +58,7 @@ function ViabilityCheckerContent({ onGetStartedRef }: ViabilityCheckerProps) {
         isError,
         error,
         reset,
-    } = useFreeSearch();
+    } = useEvidenceSearch();
 
     useEffect(() => {
         if (urlLat && urlLng && urlDate) {
@@ -88,9 +93,10 @@ function ViabilityCheckerContent({ onGetStartedRef }: ViabilityCheckerProps) {
 
 
 
-    const handleLocationChange = (lat: number, lng: number) => {
+    const handleLocationChange = (lat: number, lng: number, displayAddress?: string) => {
         setLatitude(lat);
         setLongitude(lng);
+        setAddress(displayAddress);
     };
 
     const handleSubmit = () => {
@@ -133,17 +139,23 @@ function ViabilityCheckerContent({ onGetStartedRef }: ViabilityCheckerProps) {
         <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
             {/* ─── Map Interface / Step 1 ─── */}
             <div className={`w-full transition-all duration-500 ease-in-out ${step === 1 ? 'opacity-100 scale-100' : 'opacity-0 h-0 overflow-hidden pointer-events-none'}`}>
-                <div ref={locationCardRef} className="bg-white text-brand-olive rounded-3xl p-6 shadow-xl shadow-brand-olive/5 border border-brand-gray/30 space-y-6 relative overflow-hidden">
+                <div ref={locationCardRef} className="bg-white text-brand-olive rounded-3xl p-5 shadow-[0_20px_50px_-30px_rgba(51,54,41,0.35)] border border-brand-gray/70 sm:p-7 space-y-6 relative overflow-hidden">
                     {isLoading && (
                         <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-8">
                             <LoadingState />
                         </div>
                     )}
 
+                    <div className="border-b border-brand-gray/70 pb-5">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-brand-olive/50">New investigation</p>
+                        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-brand-olive">Locate the weather evidence.</h2>
+                        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-olive/60">Enter the property and the approximate date of loss. We&apos;ll prepare a source-labelled evidence preview using available weather records.</p>
+                    </div>
+
                     <div className="space-y-3">
-                        <h2 className="flex items-center gap-2 text-brand-oliveDark font-semibold text-sm">
-                            <MapPin className="w-4 h-4 text-brand-olive" /> Property Location
-                        </h2>
+                        <h3 className="flex items-center gap-2 text-brand-oliveDark font-semibold text-sm">
+                            <MapPin className="w-4 h-4 text-brand-olive" /> Property location
+                        </h3>
                         <div className="bg-zinc-50/50 rounded-xl overflow-hidden min-h-[300px] border border-brand-gray/40 relative">
                             <LocationPicker
                                 latitude={latitude}
@@ -155,9 +167,9 @@ function ViabilityCheckerContent({ onGetStartedRef }: ViabilityCheckerProps) {
                     </div>
 
                     <div className="space-y-3">
-                        <h2 className="flex items-center gap-2 text-brand-oliveDark font-semibold text-sm">
-                            <Calendar className="w-4 h-4 text-brand-olive" /> Estimated Date Of Damage
-                        </h2>
+                        <h3 className="flex items-center gap-2 text-brand-oliveDark font-semibold text-sm">
+                            <Calendar className="w-4 h-4 text-brand-olive" /> Approximate date of loss
+                        </h3>
                         <div className="bg-zinc-50/50 rounded-xl border border-brand-gray/40 p-1">
                             <DatePicker date={date} onDateChange={setDate} />
                         </div>
@@ -174,25 +186,19 @@ function ViabilityCheckerContent({ onGetStartedRef }: ViabilityCheckerProps) {
                         disabled={!isFormValid || isLoading}
                         className="w-full h-14 bg-brand-olive hover:bg-brand-oliveDark text-white border-none text-base font-semibold transition-all rounded-xl mt-4 disabled:opacity-50"
                     >
-                        Run Free Viability Check <ArrowRight className="w-5 h-5 ml-2" />
+                        Preview available evidence <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
 
-                    <p className="text-center text-xs text-brand-olive/50 tracking-wide mt-4">
-                        Commonly requested for tornadoes, large hail, straight-line winds, and hurricanes.
+                    <p className="flex items-center justify-center gap-2 text-center text-xs text-brand-olive/50 tracking-wide mt-1">
+                        <Database className="h-3.5 w-3.5" /> Demo only · No account, payment, or property data required.
                     </p>
                 </div>
             </div>
 
-            {/* ─── Timeline Info (Shown below Map visually aligning with Figma text) ─── */}
-            <div className={`text-center space-y-2 mt-8 transition-opacity duration-300 ${step === 1 ? 'opacity-100' : 'opacity-0 hidden'}`}>
-                <p className="text-[#3A412A] font-medium text-lg leading-snug">
-                    Use transparency, official unbiased data, <br />
-                    and AI powered insights to get the coverage you deserve.
-                </p>
-                <div className="flex justify-center items-center gap-6 mt-4 text-brand-olive text-sm font-semibold">
-                    <span className="flex items-center gap-1"><Shield className="w-4 h-4" /> NOAA</span>
-                    <span className="flex items-center gap-1"><Shield className="w-4 h-4" /> NWS Alerts</span>
-                </div>
+            <div className={`mt-6 flex flex-wrap justify-center gap-3 transition-opacity duration-300 ${step === 1 ? 'opacity-100' : 'opacity-0 hidden'}`}>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Weather archive records</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> NWS alert context</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Historical imagery availability</span>
             </div>
 
 
@@ -201,18 +207,27 @@ function ViabilityCheckerContent({ onGetStartedRef }: ViabilityCheckerProps) {
                 ref={resultsRef}
                 className={`w-full transition-all duration-500 ease-in-out ${step === 2 ? 'opacity-100 translate-y-0 mt-8' : 'opacity-0 h-0 hidden translate-y-12'}`}
             >
-                {results && <ResultsDashboard data={results} />}
+                {results && latitude !== null && longitude !== null && date && (
+                    <ResultsDashboard
+                        data={results}
+                        latitude={latitude}
+                        longitude={longitude}
+                        date={date}
+                        address={address}
+                        onUnlock={() => setUnlockOpen(true)}
+                    />
+                )}
 
-                <div className="mt-8 flex justify-between items-center bg-white border border-brand-gray p-6 rounded-2xl shadow-sm">
+                <div className="mt-6 flex flex-col justify-between gap-4 bg-brand-olive p-6 rounded-2xl shadow-sm sm:flex-row sm:items-center">
                     <div>
-                        <h3 className="text-lg font-bold text-brand-olive">Unlock Full Report & Evidence</h3>
-                        <p className="text-sm text-brand-olive/60 mt-1">Access non-obfuscated satellite imagery and official PDF documentation.</p>
+                        <h3 className="text-lg font-bold text-white">Ready to assemble the evidence package?</h3>
+                        <p className="text-sm text-white/65 mt-1">Open the report preview to review its contents and download the demo package.</p>
                     </div>
                     <Button
-                        onClick={() => setStep(3)}
-                        className="bg-brand-lime text-brand-olive font-bold hover:bg-brand-limeLight px-8 h-12 rounded-xl text-base"
+                        onClick={() => setUnlockOpen(true)}
+                        className="bg-brand-lime text-brand-olive font-bold hover:bg-brand-limeLight px-6 h-11 rounded-xl text-sm"
                     >
-                        Initiate Payment
+                        Preview evidence package
                     </Button>
                 </div>
 
@@ -227,35 +242,23 @@ function ViabilityCheckerContent({ onGetStartedRef }: ViabilityCheckerProps) {
             </div>
 
 
-            {/* ─── Payment / Step 3 (TBD) ─── */}
-            <div className={`w-full transition-all duration-500 ease-in-out ${step === 3 ? 'opacity-100 translate-y-0 mt-8' : 'opacity-0 h-0 hidden translate-y-12'}`}>
-                <div className="bg-white border-2 border-brand-lime border-dashed rounded-3xl p-16 text-center space-y-6">
-                    <div className="w-20 h-20 bg-brand-lime/20 rounded-full flex items-center justify-center mx-auto text-brand-olive">
-                        <Lock className="w-10 h-10" />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-bold text-brand-olive mb-4">TBD - Payment Flow</h2>
-                        <p className="text-lg text-brand-olive/70 max-w-lg mx-auto">
-                            This is the placeholder for the Stripe/Checkout integration and full PDF report generation.
-                        </p>
-                    </div>
-                    <Button onClick={() => setStep(2)} variant="outline" className="border-brand-gray text-brand-olive mt-8">
-                        Go Back
-                    </Button>
-                </div>
+            {/* ─── Unlocked report / Step 3 ─── */}
+            <div ref={reportRef} className={`w-full transition-all duration-500 ease-in-out ${step === 3 ? 'opacity-100 translate-y-0 mt-8' : 'opacity-0 h-0 hidden translate-y-12'}`}>
+                {results && latitude !== null && longitude !== null && date && <OfficialReport report={{ data: results, latitude, longitude, date, address }} onStartNewSearch={() => { router.push("?", { scroll: false }); setUnlockOpen(false); setStep(1); handleGetStarted(); }} />}
             </div>
+            <DemoUnlockModal open={unlockOpen} onOpenChange={setUnlockOpen} onUnlock={() => { setUnlockOpen(false); setStep(3); setTimeout(() => reportRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); }} />
         </div>
     );
 }
 
-export default function ViabilityChecker({ onGetStartedRef }: ViabilityCheckerProps) {
+export default function EvidenceInvestigation({ onGetStartedRef }: EvidenceInvestigationProps) {
     return (
         <Suspense fallback={
             <div className="w-full flex items-center justify-center p-12">
                 <LoadingState />
             </div>
         }>
-            <ViabilityCheckerContent onGetStartedRef={onGetStartedRef} />
+            <EvidenceInvestigationContent onGetStartedRef={onGetStartedRef} />
         </Suspense>
     );
 }

@@ -11,7 +11,7 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 interface LocationPickerProps {
     latitude: number | null;
     longitude: number | null;
-    onLocationChange: (lat: number, lng: number) => void;
+    onLocationChange: (lat: number, lng: number, address?: string) => void;
     searchInputRef?: React.Ref<HTMLInputElement>;
 }
 
@@ -98,7 +98,7 @@ export default function LocationPicker({
 
     const handleSelectResult = (result: SearchResult) => {
         const [lng, lat] = result.center;
-        onLocationChange(lat, lng);
+        onLocationChange(lat, lng, result.place_name);
         setSearchQuery(result.place_name);
         setShowResults(false);
 
