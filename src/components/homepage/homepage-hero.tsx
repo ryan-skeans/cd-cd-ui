@@ -126,10 +126,7 @@ export function HomepageHero({ data }: { data: SearchResponse }) {
                 <div className="absolute inset-x-0 top-0 -z-10 h-[520px] bg-[radial-gradient(circle_at_78%_12%,rgba(212,243,94,0.22),transparent_38%)]" aria-hidden="true" />
                 <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-32 sm:px-6 sm:pb-20 sm:pt-[9.5rem] lg:grid-cols-[.95fr_1.05fr] lg:items-center lg:gap-16 lg:px-8 lg:pb-24 lg:pt-[10.5rem]">
                     <div>
-                        <p className="inline-flex items-center gap-2 rounded-full border border-brand-olive/15 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-brand-olive/70 shadow-sm">
-                            <span className="h-1.5 w-1.5 rounded-full bg-brand-lime ring-2 ring-brand-olive" aria-hidden="true" /> Property-specific weather evidence · Demo
-                        </p>
-                        <h1 className="mt-6 max-w-[720px] text-balance text-[2.65rem] font-semibold leading-[1.02] tracking-[-0.055em] text-brand-olive sm:text-6xl lg:text-[4rem]">
+                        <h1 className="max-w-[720px] text-balance text-[2.65rem] font-semibold leading-[1.02] tracking-[-0.055em] text-brand-olive sm:text-6xl lg:text-[4rem]">
                             See the weather record around a property, clearly sourced and organized by time.
                         </h1>
                         <p className="mt-6 max-w-2xl text-base leading-7 text-brand-olive/70 sm:text-lg sm:leading-8">

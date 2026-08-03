@@ -174,10 +174,7 @@ export function HowItWorksSection() {
                 <ol className="mt-12 grid gap-10 md:grid-cols-3 md:gap-6 lg:gap-8">
                     {steps.map((step, index) => (
                         <li key={step.title} className="relative grid grid-rows-[auto_auto_1fr_auto] border-t border-brand-olive/20 pt-5">
-                            <div className="flex items-center justify-between gap-4">
-                                <span className="text-xs font-bold tabular-nums text-brand-olive/70">0{index + 1}</span>
-                                <span className="h-2 w-2 rounded-full bg-brand-lime ring-2 ring-brand-olive" aria-hidden="true" />
-                            </div>
+                            <span className="text-xs font-bold tabular-nums text-brand-olive/70">0{index + 1}</span>
                             <h3 className="mt-5 max-w-xs text-xl font-semibold leading-tight tracking-[-0.025em] text-brand-olive md:min-h-[3.125rem]">{step.title}</h3>
                             <p className="mt-3 min-h-[72px] text-sm leading-6 text-brand-olive/70">{step.copy}</p>
                             <div className="mt-6 md:h-48">{step.visual}</div>
