@@ -49,6 +49,7 @@ function EvidenceInvestigationContent() {
     const locationCardRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
     const hasAutoRun = useRef(false);
+    const previousUrlSearchReady = useRef(urlSearchReady);
 
     const {
         mutate: runSearch,
@@ -59,8 +60,7 @@ function EvidenceInvestigationContent() {
         reset,
     } = useEvidenceSearch();
 
-    const resetInvestigation = useCallback(() => {
-        router.replace("/homeowners", { scroll: false });
+    const clearInvestigationState = useCallback(() => {
         reset();
         setStep(1);
         setLatitude(null);
@@ -75,7 +75,27 @@ function EvidenceInvestigationContent() {
         setTimeout(() => {
             searchInputRef.current?.focus();
         }, 150);
-    }, [reset, router]);
+    }, [reset]);
+
+    const resetInvestigation = useCallback(() => {
+        router.replace("/homeowners", { scroll: false });
+        clearInvestigationState();
+    }, [clearInvestigationState, router]);
+
+    useEffect(() => {
+        const returnedToInputs = previousUrlSearchReady.current
+            && !urlSearchReady
+            && urlLat === null
+            && urlLng === null
+            && urlDate === null
+            && !resetRequested;
+
+        previousUrlSearchReady.current = urlSearchReady;
+
+        if (returnedToInputs) {
+            clearInvestigationState();
+        }
+    }, [clearInvestigationState, resetRequested, urlDate, urlLat, urlLng, urlSearchReady]);
 
     // Navigation entry points use this one-time marker so returning to the
     // homeowner journey never leaves a prior investigation on screen.

@@ -153,6 +153,11 @@ body {
 }
 
 .animate-pulse-ring {
+  width: 6rem;
+  height: 6rem;
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  transform-origin: center;
   animation: pulse-ring 1.5s ease-out infinite;
 }
 

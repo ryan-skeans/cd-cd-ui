@@ -12,17 +12,17 @@ export default function LoadingState() {
                 <div className="relative">
                     {/* Outer pulse rings */}
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-24 h-24 rounded-full border border-brand-olive/20 animate-pulse-ring" />
+                        <div className="size-24 aspect-square shrink-0 rounded-full border border-brand-olive/20 animate-pulse-ring" />
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div
-                            className="w-24 h-24 rounded-full border border-brand-olive/15 animate-pulse-ring"
+                            className="size-24 aspect-square shrink-0 rounded-full border border-brand-olive/15 animate-pulse-ring"
                             style={{ animationDelay: "0.5s" }}
                         />
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div
-                            className="w-24 h-24 rounded-full border border-brand-olive/10 animate-pulse-ring"
+                            className="size-24 aspect-square shrink-0 rounded-full border border-brand-olive/10 animate-pulse-ring"
                             style={{ animationDelay: "1s" }}
                         />
                     </div>
