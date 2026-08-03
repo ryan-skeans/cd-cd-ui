@@ -1,0 +1,130 @@
+{
+  "baseline": {
+    "title": "ClaimDefender — Property weather evidence, clearly sourced",
+    "hasGenerateAction": true,
+    "horizontalOverflow": false
+  },
+  "choiceFlow": {
+    "modal": "true",
+    "hasComplete": true,
+    "hasCustomize": true
+  },
+  "completeDownloadCount": 1,
+  "defaults": {
+    "requiredDetailsInitiallyCollapsed": true,
+    "parentStates": {
+      "report-section-evidenceSummary": {
+        "dataState": "indeterminate",
+        "ariaChecked": "mixed"
+      },
+      "report-section-eventTimeline": {
+        "dataState": "checked",
+        "ariaChecked": "true"
+      },
+      "report-section-weatherContext": {
+        "dataState": "unchecked",
+        "ariaChecked": "false"
+      }
+    },
+    "expandedStates": {
+      "Expand 4 required report details": "false",
+      "Collapse Evidence summary": "true",
+      "Expand Weather-event timeline": "false",
+      "Expand Weather context": "false"
+    },
+    "dialogHorizontalOverflow": false,
+    "pageHorizontalOverflow": false,
+    "checkboxCount": 16,
+    "requiredCount": 4,
+    "requiredLockedAndChecked": true,
+    "availableContentIds": [
+      "summary-wind",
+      "summary-hail",
+      "summary-precipitation",
+      "summary-warnings",
+      "summary-stormReports",
+      "timeline-observations",
+      "timeline-hailReports",
+      "timeline-warnings",
+      "weather-precipitation"
+    ],
+    "selectedContentIds": [
+      "summary-wind",
+      "summary-hail",
+      "summary-warnings",
+      "summary-stormReports",
+      "timeline-observations",
+      "timeline-hailReports",
+      "timeline-warnings"
+    ]
+  },
+  "groupBehavior": {
+    "initialParentState": "indeterminate",
+    "parentStateAfterHailExcluded": "indeterminate",
+    "parentAriaCheckedAfterHailExcluded": "mixed",
+    "hailState": "unchecked",
+    "otherSummaryChildrenChecked": true
+  },
+  "keyboardCheckbox": {
+    "before": "unchecked",
+    "after": "checked",
+    "toggled": true
+  },
+  "collapsible": {
+    "ariaExpanded": "true",
+    "contentVisible": true
+  },
+  "reset": {
+    "restoredExactRecommendation": true,
+    "selectedContentIds": [
+      "summary-wind",
+      "summary-hail",
+      "summary-warnings",
+      "summary-stormReports",
+      "timeline-observations",
+      "timeline-hailReports",
+      "timeline-warnings"
+    ]
+  },
+  "customizedSelection": {
+    "includedContentIds": [
+      "summary-wind",
+      "summary-precipitation",
+      "summary-warnings",
+      "summary-stormReports",
+      "timeline-observations",
+      "timeline-warnings",
+      "weather-precipitation"
+    ],
+    "excludedContentIds": [
+      "summary-hail",
+      "timeline-hailReports"
+    ],
+    "evidenceParentState": "indeterminate"
+  },
+  "failure": {
+    "dialogOpen": true,
+    "hailExclusionPreserved": true,
+    "hailTimelineExclusionPreserved": true,
+    "windSelectionPreserved": true,
+    "retryAvailable": true
+  },
+  "cancel": {
+    "focusReturned": true,
+    "dialogClosed": true,
+    "generatedNothing": true
+  },
+  "keyboardDialog": {
+    "focusTrapped": true,
+    "escapeFocusReturned": true
+  },
+  "consoleErrors": [],
+  "files": [
+    "SAMPLE-PACKAGE-001-demo-evidence-package-customized.pdf",
+    "SAMPLE-PACKAGE-001-demo-evidence-package.pdf",
+    "customize-report-desktop-1440x900.png",
+    "customize-report-mobile-390x844.png",
+    "customize-report-mobile-options-390x844.png",
+    "customize-report-tablet-768x1024.png"
+  ]
+}

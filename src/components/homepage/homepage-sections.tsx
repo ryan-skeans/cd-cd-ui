@@ -67,7 +67,7 @@ const useCases = [
 
 function PropertyStepVisual() {
     return (
-        <div aria-hidden="true" className="rounded-2xl border border-brand-gray bg-white p-4 shadow-[0_18px_40px_-34px_rgba(51,54,41,.45)]">
+        <div aria-hidden="true" className="h-full rounded-2xl border border-brand-gray bg-white p-4 shadow-[0_18px_40px_-34px_rgba(51,54,41,.45)]">
             <div className="flex items-center gap-2 border-b border-brand-gray pb-3 text-[9px] font-bold uppercase tracking-[0.13em] text-brand-olive/75"><MapPin className="h-3.5 w-3.5" /> Search details</div>
             <div className="mt-3 space-y-2">
                 <div className="rounded-xl bg-brand-offWhite px-3 py-3">
@@ -88,7 +88,7 @@ function PropertyStepVisual() {
 
 function TimelineStepVisual() {
     return (
-        <div aria-hidden="true" className="rounded-2xl border border-brand-gray bg-brand-olive p-4 text-white shadow-[0_18px_40px_-34px_rgba(51,54,41,.65)]">
+        <div aria-hidden="true" className="h-full rounded-2xl border border-brand-gray bg-brand-olive p-4 text-white shadow-[0_18px_40px_-34px_rgba(51,54,41,.65)]">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <p className="text-[9px] font-bold uppercase tracking-[0.13em] text-white/60">Impact chronology</p>
                 <span className="rounded-full bg-brand-lime/20 px-2 py-1 text-[8px] font-bold uppercase tracking-[0.08em] text-brand-lime">3 records</span>
@@ -115,7 +115,7 @@ function TimelineStepVisual() {
 
 function ReportStepVisual() {
     return (
-        <div aria-hidden="true" className="rounded-2xl border border-brand-gray bg-white p-4 shadow-[0_18px_40px_-34px_rgba(51,54,41,.45)]">
+        <div aria-hidden="true" className="h-full rounded-2xl border border-brand-gray bg-white p-4 shadow-[0_18px_40px_-34px_rgba(51,54,41,.45)]">
             <div className="flex items-center justify-between border-b border-brand-gray pb-3">
                 <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.13em] text-brand-olive/75"><FileText className="h-3.5 w-3.5" /> Evidence report</div>
                 <span className="rounded-full bg-brand-lime/35 px-2 py-1 text-[8px] font-bold uppercase tracking-[0.08em] text-brand-olive">Demo</span>
@@ -173,14 +173,14 @@ export function HowItWorksSection() {
 
                 <ol className="mt-12 grid gap-10 md:grid-cols-3 md:gap-6 lg:gap-8">
                     {steps.map((step, index) => (
-                        <li key={step.title} className="relative border-t border-brand-olive/20 pt-5">
+                        <li key={step.title} className="relative grid grid-rows-[auto_auto_1fr_auto] border-t border-brand-olive/20 pt-5">
                             <div className="flex items-center justify-between gap-4">
                                 <span className="text-xs font-bold tabular-nums text-brand-olive/70">0{index + 1}</span>
                                 <span className="h-2 w-2 rounded-full bg-brand-lime ring-2 ring-brand-olive" aria-hidden="true" />
                             </div>
-                            <h3 className="mt-5 max-w-xs text-xl font-semibold leading-tight tracking-[-0.025em] text-brand-olive">{step.title}</h3>
+                            <h3 className="mt-5 max-w-xs text-xl font-semibold leading-tight tracking-[-0.025em] text-brand-olive md:min-h-[3.125rem]">{step.title}</h3>
                             <p className="mt-3 min-h-[72px] text-sm leading-6 text-brand-olive/70">{step.copy}</p>
-                            <div className="mt-6">{step.visual}</div>
+                            <div className="mt-6 md:h-48">{step.visual}</div>
                         </li>
                     ))}
                 </ol>

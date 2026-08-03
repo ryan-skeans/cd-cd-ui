@@ -5,10 +5,30 @@ import { Document, Image as PdfImage, Page, StyleSheet, Text, View, pdf } from "
 import { format } from "date-fns";
 import { AlertTriangle, Database, Download, FileCheck, MapPin, RefreshCw, ShieldCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import ReportPdfDialog from "@/components/report-pdf-dialog";
 import { Button } from "@/components/ui/button";
-import { buildEvidenceSummary, classificationLabels, formatMeasurement, readableEvidenceDate } from "@/lib/evidence";
+import {
+    buildEvidenceSummary,
+    buildEvidenceSummaryBlocks,
+    classificationLabels,
+    EVIDENCE_SUMMARY_DISCLAIMER,
+    EvidenceSummaryBlockId,
+    formatMeasurement,
+    readableEvidenceDate,
+} from "@/lib/evidence";
 import { trackDemoEvent } from "@/lib/demo-analytics";
 import { DemoClaimContext, DemoClientContext, DemoOrganization } from "@/lib/demo-workspace";
+import {
+    customizedReportDisclosure,
+    getAvailableReportContent,
+    getRecommendedReportContent,
+    includesReportContent,
+    reportContentIdForTimelineEntry,
+    ReportContentId,
+    ReportCustomizationInput,
+    ReportPdfConfiguration,
+    resolveReportPdfConfiguration,
+} from "@/lib/report-sections";
 import { EvidenceClassification, SearchResponse } from "@/lib/types";
 
 export interface ReportDetails {
@@ -35,6 +55,7 @@ const styles = StyleSheet.create({
     title: { fontSize: 21, fontWeight: 700, lineHeight: 1.15, marginBottom: 8 },
     sub: { color: "#5d6852", marginBottom: 13 },
     disclosure: { padding: 9, backgroundColor: "#f2f6db", marginBottom: 14 },
+    customizedDisclosure: { color: "#5d6852", fontSize: 7, marginTop: -7, marginBottom: 11 },
     logo: { width: 72, maxHeight: 32, objectFit: "contain", marginBottom: 8 },
     section: { marginTop: 15 },
     heading: { fontSize: 11, fontWeight: 700, marginBottom: 7 },
@@ -74,13 +95,20 @@ function sourceStatus(status: string) {
 
 function reportMetrics(data: SearchResponse) {
     return [
-        ["Event-day observed gust", formatMeasurement(data.summary.maximumObservedWindGustMph, "mph", 1), "Observed"],
-        ["Nearby reported gust", formatMeasurement(data.summary.maximumReportedWindGustMph, "mph", 1), "Reported"],
-        ["Nearby reported hail", formatMeasurement(data.summary.maximumReportedHailInches, "in"), "Reported"],
-        ["Warnings at property", String(data.summary.warningCount), "Warning"],
-        ["Event-day precipitation", formatMeasurement(data.precipitation.eventDayTotalInches, "in"), "Observed"],
-    ];
+        { contentId: "summary.wind" as const, label: "Event-day observed gust", value: formatMeasurement(data.summary.maximumObservedWindGustMph, "mph", 1), classification: "Observed" },
+        { contentId: "summary.wind" as const, label: "Nearby reported gust", value: formatMeasurement(data.summary.maximumReportedWindGustMph, "mph", 1), classification: "Reported" },
+        { contentId: "summary.hail" as const, label: "Nearby reported hail", value: formatMeasurement(data.summary.maximumReportedHailInches, "in"), classification: "Reported" },
+        { contentId: "summary.warnings" as const, label: "Warnings at property", value: String(data.summary.warningCount), classification: "Warning" },
+        { contentId: "summary.precipitation" as const, label: "Event-day precipitation", value: formatMeasurement(data.precipitation.eventDayTotalInches, "in"), classification: "Observed" },
+    ] satisfies Array<{ contentId: ReportContentId; label: string; value: string; classification: string }>;
 }
+
+const summaryBlockContentIds: Record<EvidenceSummaryBlockId, ReportContentId> = {
+    wind: "summary.wind",
+    hail: "summary.hail",
+    stormReports: "summary.stormReports",
+    warnings: "summary.warnings",
+};
 
 function professionalContextRows(context: ReportContext) {
     return [
@@ -93,26 +121,44 @@ function professionalContextRows(context: ReportContext) {
     ].filter((row): row is [string, string] => Boolean(row[1]));
 }
 
-function PdfDocument({ report, context }: { report: ReportDetails; context: ReportContext }) {
+function filteredEvidenceSummary(data: SearchResponse, includes: (contentId: ReportContentId) => boolean) {
+    const selectedBlocks = buildEvidenceSummaryBlocks(data)
+        .filter((block) => includes(summaryBlockContentIds[block.id]))
+        .map((block) => block.text);
+    return [...selectedBlocks, EVIDENCE_SUMMARY_DISCLAIMER].join(" ");
+}
+
+export function PdfDocument({ report, context, configuration }: { report: ReportDetails; context: ReportContext; configuration?: ReportPdfConfiguration }) {
     const { data } = report;
     const professional = context.audience === "professional";
+    const customizationInput: ReportCustomizationInput = { data, eventType: context.claim?.eventType };
+    const resolvedConfiguration = resolveReportPdfConfiguration(customizationInput, configuration);
+    const includes = (contentId: ReportContentId) => includesReportContent(resolvedConfiguration, contentId);
+    const summaryMetrics = reportMetrics(data).filter((metric) => includes(metric.contentId));
+    const hasSummaryContent = !resolvedConfiguration.isCustomized
+        || getAvailableReportContent(customizationInput, "evidenceSummary").some((content) => includes(content.id));
+    const summaryText = resolvedConfiguration.isCustomized ? filteredEvidenceSummary(data, includes) : buildEvidenceSummary(data);
+    const timelineEntries = resolvedConfiguration.isCustomized
+        ? data.timeline.filter((entry) => includes(reportContentIdForTimelineEntry(data, entry)))
+        : data.timeline;
     return <Document>
         <Page size="LETTER" style={styles.page}>
             {professional && context.organization?.logoDataUrl && <PdfImage src={context.organization.logoDataUrl} style={styles.logo} />}
             <Text style={styles.eyebrow}>CLAIMDEFENDER · {professional ? "DEMO EVIDENCE PACKAGE" : "DEMO PROPERTY EVIDENCE REPORT"}</Text>
             <Text style={styles.title}>{professional ? `${context.organization?.name ?? "Professional"} evidence package` : "Property weather evidence"}</Text>
             <Text style={styles.sub}>{reportId(report, context)} · Generated {readableEvidenceDate(data.generatedAt, data.property.timeZone)}</Text>
+            {resolvedConfiguration.isCustomized && <Text style={styles.customizedDisclosure}>{customizedReportDisclosure(reportId(report, context))}</Text>}
             <Text style={styles.disclosure}>DEMO DISCLOSURE — This package organizes available records. It does not determine coverage, cause, property damage, or claim outcome.</Text>
             {professional && <View style={styles.section}><Text style={styles.heading}>Package context</Text>{professionalContextRows(context).map(([label, value]) => <Text key={label}>{label}: {value}</Text>)}{context.claim?.notes && <Text>Internal notes: {context.claim.notes}</Text>}</View>}
             <View style={styles.section}><Text style={styles.heading}>{professional ? "Property and event" : "Property and date"}</Text><Text>Property: {propertyLabel(report)}</Text><Text>Coordinates: {report.latitude.toFixed(4)}, {report.longitude.toFixed(4)}</Text><Text>Approximate date of loss: {format(report.date, "MMMM d, yyyy")} ({data.property.timeZone})</Text><Text>Event-day observation window: {readableEvidenceDate(data.eventDayWindow.start, data.property.timeZone)} to {readableEvidenceDate(data.eventDayWindow.end, data.property.timeZone)}</Text></View>
-            <View style={styles.section}><Text style={styles.heading}>Evidence summary</Text><View style={styles.row}>{reportMetrics(data).map(([label, value, classification]) => <View key={label} style={styles.box}><Text style={styles.label}>{classification} · {label}</Text><Text style={styles.value}>{value}</Text></View>)}</View><Text style={styles.note}>{buildEvidenceSummary(data)}</Text></View>
-            <View style={styles.section}><Text style={styles.heading}>Weather-event timeline</Text>{data.timeline.length ? data.timeline.slice(0, 14).map((entry) => <View key={entry.id} style={styles.timelineRow}><Text style={styles.timelineMeta}>{classificationLabels[entry.classification]} · {readableEvidenceDate(entry.timestamp, data.property.timeZone)} · {entry.source}{typeof entry.distanceMilesFromProperty === "number" ? ` · ${entry.distanceMilesFromProperty.toFixed(1)} miles` : ""}</Text><Text>{entry.title}</Text><Text style={styles.note}>{entry.explanation}</Text></View>) : <Text>No timeline records were returned by the searched sources.</Text>}</View>
+            {hasSummaryContent && <View style={styles.section}><Text style={styles.heading}>Evidence summary</Text>{summaryMetrics.length > 0 && <View style={styles.row}>{summaryMetrics.map(({ label, value, classification }) => <View key={label} style={styles.box}><Text style={styles.label}>{classification} · {label}</Text><Text style={styles.value}>{value}</Text></View>)}</View>}<Text style={styles.note}>{summaryText}</Text></View>}
+            {(!resolvedConfiguration.isCustomized || timelineEntries.length > 0) && <View style={styles.section}><Text style={styles.heading}>Weather-event timeline</Text>{timelineEntries.length ? timelineEntries.slice(0, 14).map((entry) => <View key={entry.id} style={styles.timelineRow}><Text style={styles.timelineMeta}>{classificationLabels[entry.classification]} · {readableEvidenceDate(entry.timestamp, data.property.timeZone)} · {entry.source}{typeof entry.distanceMilesFromProperty === "number" ? ` · ${entry.distanceMilesFromProperty.toFixed(1)} miles` : ""}</Text><Text>{entry.title}</Text><Text style={styles.note}>{entry.explanation}</Text></View>) : <Text>No timeline records were returned by the searched sources.</Text>}</View>}
             <Text style={styles.footer}>Observed values were measured at identified locations. Nearby reports occurred at reported locations, and warnings describe warned areas. These categories are not interchangeable.</Text>
         </Page>
         <Page size="LETTER" style={styles.page}>
             <Text style={styles.eyebrow}>CLAIMDEFENDER · DEMO SOURCE APPENDIX</Text><Text style={styles.title}>Sources, methodology, and limitations</Text><Text style={styles.sub}>{reportId(report, context)} · Retrieval {readableEvidenceDate(data.generatedAt, data.property.timeZone)}</Text>
             <View style={styles.section}><Text style={styles.heading}>Source retrieval status</Text>{data.sources.map((source) => <View key={source.id} style={styles.sourceRow}><Text style={styles.sourceName}>{source.provider}{"\n"}{source.dataset}</Text><Text style={styles.sourceStatus}>{sourceStatus(source.status)}{"\n"}{source.recordCount} record(s)</Text><Text style={styles.sourceCaveat}>{source.message ?? source.limitations[0]}{"\n"}Retrieved: {readableEvidenceDate(source.retrievedAt, data.property.timeZone)}</Text></View>)}</View>
-            <View style={styles.section}><Text style={styles.heading}>Precipitation context</Text><Text>Station: {data.precipitation.stationName ?? "Not available"} ({data.precipitation.stationId ?? "no station ID"})</Text><Text>Event day: {formatMeasurement(data.precipitation.eventDayTotalInches, "in")}</Text><Text>Prior 24 / 72 hours: {formatMeasurement(data.precipitation.prior24HoursInches, "in")} / {formatMeasurement(data.precipitation.prior72HoursInches, "in")}</Text><Text>Prior seven days: {formatMeasurement(data.precipitation.priorSevenDaysInches, "in")}</Text></View>
+            {includes("weather.precipitation") && <View style={styles.section}><Text style={styles.heading}>Precipitation context</Text><Text>Station: {data.precipitation.stationName ?? "Not available"} ({data.precipitation.stationId ?? "no station ID"})</Text><Text>Event day: {formatMeasurement(data.precipitation.eventDayTotalInches, "in")}</Text><Text>Prior 24 / 72 hours: {formatMeasurement(data.precipitation.prior24HoursInches, "in")} / {formatMeasurement(data.precipitation.prior72HoursInches, "in")}</Text><Text>Prior seven days: {formatMeasurement(data.precipitation.priorSevenDaysInches, "in")}</Text></View>}
             {data.dataQualityWarnings.length > 0 && <View style={styles.section}><Text style={styles.heading}>Data-quality notices</Text>{data.dataQualityWarnings.map((warning) => <Text key={warning} style={styles.note}>• {warning}</Text>)}</View>}
             <View style={styles.section}><Text style={styles.heading}>{professional ? "Package limitations" : "Report limitations"}</Text>{data.limitations.map((limitation) => <Text key={limitation} style={styles.note}>• {limitation}</Text>)}</View>
             <View style={styles.section}><Text style={styles.heading}>Imagery context</Text><Text>Before capture: {readableEvidenceDate(data.imagery.before?.capturedAt, data.property.timeZone)} · {data.imagery.before?.itemId ?? "No item"}</Text><Text>After capture: {readableEvidenceDate(data.imagery.after?.capturedAt, data.property.timeZone)} · {data.imagery.after?.itemId ?? "No item"}</Text><Text style={styles.note}>Available optical imagery is contextual. It cannot establish roof-level damage and is not analyzed in this report.</Text></View>
@@ -128,10 +174,14 @@ function ClassificationPill({ value }: { value: EvidenceClassification }) {
 export default function OfficialReport({ report, context = { audience: "homeowner" }, onStartNewSearch, onReportPreviewed }: { report: ReportDetails; context?: ReportContext; onStartNewSearch?: () => void; onReportPreviewed?: () => void }) {
     const [preparing, setPreparing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
     const { data } = report;
+    const customizationInput: ReportCustomizationInput = { data, eventType: context.claim?.eventType };
     const professional = context.audience === "professional";
     const contextRows = professionalContextRows(context);
     const previewTracked = useRef(false);
+    const pdfButtonRef = useRef<HTMLButtonElement>(null);
+    const preparingRef = useRef(false);
 
     useEffect(() => {
         if (previewTracked.current) return;
@@ -140,31 +190,56 @@ export default function OfficialReport({ report, context = { audience: "homeowne
         trackDemoEvent("report_preview_opened", { audience: context.audience });
     }, [context.audience, onReportPreviewed]);
 
-    const download = async () => {
+    const openPdfFlow = () => {
+        setError(null);
+        setPdfDialogOpen(true);
+        trackDemoEvent("report_pdf_flow_opened", { audience: context.audience });
+    };
+
+    const download = async (configuration?: ReportPdfConfiguration) => {
+        if (preparingRef.current) return;
+        preparingRef.current = true;
         setPreparing(true);
         setError(null);
         try {
-            const blob = await pdf(<PdfDocument report={report} context={context} />).toBlob();
+            const blob = await pdf(<PdfDocument report={report} context={context} configuration={configuration} />).toBlob();
             const url = URL.createObjectURL(blob);
             const anchor = document.createElement("a");
             anchor.href = url;
-            anchor.download = `${reportId(report, context)}-${professional ? "demo-evidence-package" : "demo-property-evidence-report"}.pdf`;
+            const fileLabel = professional ? "demo-evidence-package" : "demo-property-evidence-report";
+            anchor.download = `${reportId(report, context)}-${fileLabel}${configuration ? "-customized" : ""}.pdf`;
             anchor.click();
             window.setTimeout(() => URL.revokeObjectURL(url), 1000);
             trackDemoEvent("demo_pdf_downloaded", { audience: context.audience });
+            if (configuration) {
+                const resolved = resolveReportPdfConfiguration(customizationInput, configuration);
+                const availableContent = getAvailableReportContent(customizationInput).map((content) => content.id);
+                const included = new Set(resolved.includedContent);
+                trackDemoEvent("customized_report_pdf_generated", {
+                    audience: context.audience,
+                    includedContentCount: resolved.includedContent.length,
+                    includedContentIds: resolved.includedContent.join(","),
+                    excludedContentIds: availableContent.filter((contentId) => !included.has(contentId)).join(","),
+                });
+            } else {
+                trackDemoEvent("complete_report_pdf_generated", { audience: context.audience });
+            }
+            setPdfDialogOpen(false);
         } catch {
-            setError("Unable to generate the PDF. Please try again.");
+            setError("Unable to generate the PDF. Please try again. Your report and section selections have been preserved.");
+            if (configuration) trackDemoEvent("customized_report_pdf_generation_failed", { audience: context.audience });
         } finally {
+            preparingRef.current = false;
             setPreparing(false);
         }
     };
 
     return <section className="mx-auto w-full max-w-5xl space-y-6 animate-in fade-in-0 slide-in-from-bottom-6 duration-500">
-        <div className="rounded-3xl bg-brand-olive p-6 text-white shadow-xl sm:p-8"><div className="flex flex-col items-start justify-between gap-5 sm:flex-row"><div className="flex items-start gap-4">{professional && context.organization?.logoDataUrl && <img src={context.organization.logoDataUrl} alt={`${context.organization.name} logo`} className="h-12 w-20 rounded-lg bg-white object-contain p-1" />}<div><div className="mb-3 flex items-center gap-2 text-brand-lime"><FileCheck className="h-5 w-5" /><span className="text-xs font-bold uppercase tracking-[.16em]">{professional ? "Demo Evidence Package" : "Demo Property Evidence Report"}</span></div><h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">{professional ? context.organization?.name ?? "Professional Evidence Package" : "Property Weather Evidence Report"}</h2><p className="mt-2 text-sm text-white/65">{reportId(report, context)} · Generated {readableEvidenceDate(data.generatedAt, data.property.timeZone)}</p></div></div><Button onClick={download} disabled={preparing} className="bg-brand-lime font-bold text-brand-olive hover:bg-brand-limeLight"><Download className="mr-2 h-4 w-4" />{preparing ? "Preparing PDF…" : "Download demo PDF"}</Button></div><div className="mt-6 flex gap-3 rounded-xl border border-white/10 bg-white/5 p-4 text-xs leading-relaxed text-white/65"><ShieldCheck className="h-4 w-4 shrink-0 text-brand-lime" />This report preserves classifications and source limitations. It does not determine coverage, causation, physical damage, or claim outcome.</div></div>
-        {error && <p role="alert" className="rounded-xl border border-red-500/20 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
+        <div className="rounded-3xl bg-brand-olive p-6 text-white shadow-xl sm:p-8"><div className="flex flex-col items-start justify-between gap-5 sm:flex-row"><div className="flex items-start gap-4">{professional && context.organization?.logoDataUrl && <img src={context.organization.logoDataUrl} alt={`${context.organization.name} logo`} className="h-12 w-20 rounded-lg bg-white object-contain p-1" />}<div><div className="mb-3 flex items-center gap-2 text-brand-lime"><FileCheck className="h-5 w-5" /><span className="text-xs font-bold uppercase tracking-[.16em]">{professional ? "Demo Evidence Package" : "Demo Property Evidence Report"}</span></div><h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">{professional ? context.organization?.name ?? "Professional Evidence Package" : "Property Weather Evidence Report"}</h2><p className="mt-2 text-sm text-white/65">{reportId(report, context)} · Generated {readableEvidenceDate(data.generatedAt, data.property.timeZone)}</p></div></div><Button ref={pdfButtonRef} onClick={openPdfFlow} disabled={preparing} className="min-h-11 bg-brand-lime font-bold text-brand-olive hover:bg-brand-limeLight"><Download className="mr-2 h-4 w-4" />Generate PDF</Button></div><div className="mt-6 flex gap-3 rounded-xl border border-white/10 bg-white/5 p-4 text-xs leading-relaxed text-white/65"><ShieldCheck className="h-4 w-4 shrink-0 text-brand-lime" />This report preserves classifications and source limitations. It does not determine coverage, causation, physical damage, or claim outcome.</div></div>
+        <ReportPdfDialog open={pdfDialogOpen} onOpenChange={(open) => { if (!preparing) { setPdfDialogOpen(open); if (!open) setError(null); } }} onGenerate={download} onCustomizeOpened={() => trackDemoEvent("customize_report_pdf_opened", { audience: context.audience, availableContentCount: getAvailableReportContent(customizationInput).length, recommendedContentCount: getRecommendedReportContent(customizationInput).length })} onRecommendationsRestored={() => trackDemoEvent("customized_report_recommendations_restored", { audience: context.audience })} input={customizationInput} preparing={preparing} error={error} returnFocusRef={pdfButtonRef} />
         {professional && contextRows.length > 0 && <div className="rounded-2xl border border-brand-gray/60 bg-white p-5 sm:p-6"><h3 className="font-semibold text-brand-olive">Professional package context</h3><dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{contextRows.map(([label, value]) => <div key={label}><dt className="text-[10px] font-bold uppercase tracking-wider text-brand-olive/45">{label}</dt><dd className="mt-1 text-sm text-brand-olive">{value}</dd></div>)}</dl>{context.claim?.notes && <div className="mt-4 border-t border-brand-gray pt-4"><p className="text-[10px] font-bold uppercase tracking-wider text-brand-olive/45">Internal notes</p><p className="mt-1 text-sm leading-relaxed text-brand-olive/65">{context.claim.notes}</p></div>}</div>}
         <div className="grid gap-5 md:grid-cols-[1.35fr_.65fr]"><div className="rounded-2xl border border-brand-gray/60 bg-white p-5"><h3 className="font-semibold text-brand-olive">{professional ? "Property and event" : "Property and date"}</h3><p className="mt-3 flex items-start gap-2 text-sm text-brand-olive/70"><MapPin className="mt-0.5 h-4 w-4 shrink-0" />{propertyLabel(report)}</p><p className="mt-2 text-sm text-brand-olive/70">Approximate date: {format(report.date, "MMMM d, yyyy")} · {data.property.timeZone}</p><p className="mt-1 text-xs text-brand-olive/45">Coordinates: {report.latitude.toFixed(4)}, {report.longitude.toFixed(4)}</p></div><div className="rounded-2xl border border-brand-lime/40 bg-brand-lime/20 p-5 text-brand-olive"><div className="flex items-center gap-2"><Database className="h-4 w-4" /><p className="text-xs font-bold uppercase tracking-wider">Record inventory</p></div><p className="mt-3 text-sm font-semibold leading-relaxed">{data.records.localStormReports.length} local reports<br />{data.records.warnings.length} warnings<br />{data.records.stationObservations.length} station records<br />{data.timeline.length} timeline entries</p></div></div>
-        <div className="rounded-2xl border border-brand-gray/60 bg-white p-5 sm:p-6"><h3 className="font-semibold text-brand-olive">Evidence summary</h3><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{reportMetrics(data).map(([label, value, classification]) => <div key={label} className="rounded-xl border border-brand-gray/60 bg-brand-offWhite p-3"><p className="text-[9px] font-bold uppercase tracking-wider text-brand-olive/45">{classification}</p><p className="mt-2 text-xs text-brand-olive/55">{label}</p><p className="mt-1 font-semibold text-brand-olive">{value}</p></div>)}</div><p className="mt-4 text-sm leading-relaxed text-brand-olive/70">{buildEvidenceSummary(data)}</p></div>
+        <div className="rounded-2xl border border-brand-gray/60 bg-white p-5 sm:p-6"><h3 className="font-semibold text-brand-olive">Evidence summary</h3><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{reportMetrics(data).map(({ label, value, classification }) => <div key={label} className="rounded-xl border border-brand-gray/60 bg-brand-offWhite p-3"><p className="text-[9px] font-bold uppercase tracking-wider text-brand-olive/45">{classification}</p><p className="mt-2 text-xs text-brand-olive/55">{label}</p><p className="mt-1 font-semibold text-brand-olive">{value}</p></div>)}</div><p className="mt-4 text-sm leading-relaxed text-brand-olive/70">{buildEvidenceSummary(data)}</p></div>
         <div className="rounded-2xl border border-brand-gray/60 bg-white p-5 sm:p-6"><h3 className="font-semibold text-brand-olive">Weather-event timeline</h3>{data.timeline.length ? <ol className="mt-4 border-l border-brand-gray pl-5">{data.timeline.map((entry) => <li key={entry.id} className="relative pb-5 last:pb-0"><span className="absolute -left-[24.5px] top-1.5 h-2 w-2 rounded-full bg-brand-olive ring-4 ring-white" /><div className="flex flex-wrap items-center gap-2"><ClassificationPill value={entry.classification} /><time className="text-[10px] text-brand-olive/45">{readableEvidenceDate(entry.timestamp, data.property.timeZone)}</time></div><p className="mt-2 text-sm font-semibold text-brand-olive">{entry.title}</p><p className="mt-1 text-xs leading-relaxed text-brand-olive/60">{entry.explanation}</p><p className="mt-1 text-[10px] text-brand-olive/40">{entry.source}{typeof entry.distanceMilesFromProperty === "number" ? ` · ${entry.distanceMilesFromProperty.toFixed(1)} miles from property` : ""}</p></li>)}</ol> : <p className="mt-4 text-sm text-brand-olive/55">No timeline records were returned.</p>}</div>
         {data.dataQualityWarnings.length > 0 && <div className="rounded-2xl border border-amber-700/20 bg-amber-50 p-5"><h3 className="flex items-center gap-2 font-semibold text-brand-olive"><AlertTriangle className="h-4 w-4 text-amber-800" />Data-quality notices</h3><ul className="mt-3 space-y-2 pl-5 text-xs leading-relaxed text-brand-olive/65">{data.dataQualityWarnings.map((warning) => <li className="list-disc" key={warning}>{warning}</li>)}</ul></div>}
         <div className="rounded-2xl border border-brand-gray/60 bg-white p-5 sm:p-6"><h3 className="font-semibold text-brand-olive">Source appendix</h3><div className="mt-4 divide-y divide-brand-gray/70 border-y border-brand-gray/70">{data.sources.map((source) => <div key={source.id} className="grid gap-1 py-4 text-sm sm:grid-cols-[1fr_.65fr_1.5fr] sm:gap-4"><div><p className="font-semibold text-brand-olive">{source.provider}</p><a href={source.sourceUrl} target="_blank" rel="noreferrer" className="text-[10px] text-brand-olive/45 underline">{source.dataset}</a></div><p className="text-xs text-brand-olive/65">{sourceStatus(source.status)} · {source.recordCount}<br />{readableEvidenceDate(source.retrievedAt, data.property.timeZone)}</p><p className="text-xs leading-relaxed text-brand-olive/50">{source.message ?? source.limitations[0]}</p></div>)}</div></div>
