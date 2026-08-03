@@ -18,6 +18,7 @@ const requiredAssets = [
     "public/brand/claim-defender-app-icon-192.png",
     "public/brand/claim-defender-app-icon-512.png",
     "public/brand/claim-defender-social.png",
+    "public/favicon.ico",
     "public/manifest.webmanifest",
 ] as const;
 
@@ -31,6 +32,14 @@ test("source SVGs stay vector-only and avoid effects", () => {
         assert.doesNotMatch(svg, /<(?:image|filter|linearGradient|radialGradient)\b/i, `${asset} should not embed raster artwork or SVG effects`);
         assert.doesNotMatch(svg, /data:image/i, `${asset} should not contain a raster data URI`);
     }
+});
+
+test("favicon stays legible at browser-tab size", () => {
+    const favicon = readFileSync("public/brand/favicon.svg", "utf8");
+
+    assert.match(favicon, /viewBox="0 0 32 32"/);
+    assert.match(favicon, /<path\b/);
+    assert.doesNotMatch(favicon, /topograph|contour|<text\b/i);
 });
 
 test("logo variants expose one accessible brand name and reserve the tagline for primary use", () => {
