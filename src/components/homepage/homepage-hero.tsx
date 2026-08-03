@@ -71,20 +71,22 @@ function HeroEvidencePreview({ data }: { data: SearchResponse }) {
                         <p className="flex items-center gap-1.5 text-[11px] font-medium text-brand-olive/75"><CalendarDays className="h-3.5 w-3.5" aria-hidden="true" /> May 21, 2024</p>
                     </div>
 
-                    <div className="relative mt-5 overflow-hidden rounded-2xl bg-brand-olive px-3 py-3 text-white sm:px-4">
-                        <div className="absolute bottom-0 left-[78px] top-0 w-px bg-white/10 sm:left-[105px]" aria-hidden="true" />
+                    <div className="relative mt-5 overflow-hidden rounded-2xl bg-brand-olive px-3 py-3 text-white max-[420px]:px-2 sm:px-4">
+                        <div className="absolute bottom-0 left-[110px] top-0 w-px bg-white/10 max-[420px]:left-[22px] sm:left-[142px]" aria-hidden="true" />
                         <ol className="relative space-y-1">
                             {data.timeline.map((entry) => {
                                 const style = previewStyles[entry.classification as keyof typeof previewStyles] ?? previewStyles.warning;
                                 const Icon = style.icon;
                                 return (
-                                    <li key={entry.id} className="grid grid-cols-[62px_1fr] gap-3 rounded-xl px-1 py-2.5 sm:grid-cols-[88px_1fr] sm:gap-4">
-                                        <time className="pt-1 text-[9px] font-semibold text-white/65 sm:text-[10px]">{eventTime(entry.timestamp, data.property.timeZone)}</time>
-                                        <div className="relative pl-4 sm:pl-5">
-                                            <span className="absolute -left-[19px] top-1 grid h-5 w-5 place-items-center rounded-full border-2 border-brand-olive bg-brand-lime text-brand-olive sm:-left-[22px]">
-                                                <Icon className="h-2.5 w-2.5" aria-hidden="true" />
-                                            </span>
-                                            <span className={`inline-flex rounded-full border px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] ${style.className}`}>{style.label}</span>
+                                    <li key={entry.id} className="grid grid-cols-[76px_20px_minmax(0,1fr)] gap-x-2 rounded-xl px-1 py-2.5 max-[420px]:grid-cols-[20px_minmax(0,1fr)] sm:grid-cols-[100px_20px_minmax(0,1fr)] sm:gap-x-3">
+                                        <time className="flex h-5 items-center justify-end whitespace-nowrap text-right text-[9px] font-semibold text-white/65 max-[420px]:col-span-2 max-[420px]:justify-start max-[420px]:pl-8 max-[420px]:text-left sm:text-[10px]">{eventTime(entry.timestamp, data.property.timeZone)}</time>
+                                        <span className="relative z-10 grid h-5 w-5 place-items-center rounded-full border-2 border-brand-olive bg-brand-lime text-brand-olive max-[420px]:col-start-1 max-[420px]:row-start-2">
+                                            <Icon className="h-2.5 w-2.5" aria-hidden="true" />
+                                        </span>
+                                        <div className="min-w-0 max-[420px]:col-start-2 max-[420px]:row-start-2">
+                                            <div className="flex h-5 items-center">
+                                                <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] ${style.className}`}>{style.label}</span>
+                                            </div>
                                             <p className="mt-1.5 text-[11px] font-medium leading-snug text-white sm:text-xs">{entry.title}</p>
                                             <p className="mt-1 text-[9px] leading-relaxed text-white/60 sm:text-[10px]">{entry.source}{typeof entry.distanceMilesFromProperty === "number" ? ` · ${entry.distanceMilesFromProperty.toFixed(1)} mi from property` : ""}</p>
                                         </div>

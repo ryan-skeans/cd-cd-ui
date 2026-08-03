@@ -21,6 +21,7 @@ function EvidenceInvestigationContent() {
     const urlLat = searchParams.get("lat");
     const urlLng = searchParams.get("lng");
     const urlDate = searchParams.get("date");
+    const resetRequested = searchParams.get("reset") === "1";
     const parsedUrlLat = urlLat === null ? null : Number(urlLat);
     const parsedUrlLng = urlLng === null ? null : Number(urlLng);
     const parsedUrlDate = useMemo(() => urlDate === null ? null : new Date(urlDate), [urlDate]);
@@ -75,6 +76,14 @@ function EvidenceInvestigationContent() {
             searchInputRef.current?.focus();
         }, 150);
     }, [reset, router]);
+
+    // Navigation entry points use this one-time marker so returning to the
+    // homeowner journey never leaves a prior investigation on screen.
+    useEffect(() => {
+        if (resetRequested) {
+            resetInvestigation();
+        }
+    }, [resetInvestigation, resetRequested]);
 
     useEffect(() => {
         if (urlSearchReady && parsedUrlLat !== null && parsedUrlLng !== null && parsedUrlDate) {
