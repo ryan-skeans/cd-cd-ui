@@ -15,15 +15,15 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "ClaimDefender — Property-specific weather evidence",
+  title: "ClaimDefender — Property weather evidence, clearly sourced",
   description:
-    "Prepare a source-labelled weather evidence package for a property damage investigation using available weather archives, NWS alert context, and imagery records.",
+    "Review source-labeled weather observations, nearby reports, warning context, precipitation, and a property-specific impact timeline in one evidence package.",
   keywords: [
     "property damage evidence",
     "weather evidence package",
+    "weather impact timeline",
     "weather archive data",
     "NWS alert records",
-    "historical imagery",
     "claim documentation",
   ],
 };

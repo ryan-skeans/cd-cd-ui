@@ -30,7 +30,9 @@ export interface ReportContext {
 const styles = StyleSheet.create({
     page: { padding: 36, fontSize: 8.5, color: "#333629", lineHeight: 1.45 },
     eyebrow: { color: "#68705b", fontSize: 7.5, letterSpacing: 1.1, marginBottom: 6 },
-    title: { fontSize: 21, fontWeight: 700, marginBottom: 5 },
+    // The page's body line height is inherited as a fixed point value by react-pdf.
+    // Recalculate it for the larger heading so the subtitle cannot enter its line box.
+    title: { fontSize: 21, fontWeight: 700, lineHeight: 1.15, marginBottom: 8 },
     sub: { color: "#5d6852", marginBottom: 13 },
     disclosure: { padding: 9, backgroundColor: "#f2f6db", marginBottom: 14 },
     logo: { width: 72, maxHeight: 32, objectFit: "contain", marginBottom: 8 },

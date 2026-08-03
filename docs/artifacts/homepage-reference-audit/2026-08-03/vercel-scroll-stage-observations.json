@@ -1,0 +1,269 @@
+[
+  {
+    "viewport": {
+      "slug": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    "index": 1,
+    "ratio": 0,
+    "y": 0,
+    "documentHeight": 5333,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-desktop-scroll-stage-1.png",
+    "visible": [
+      "Agentic Infrastructure"
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    "index": 2,
+    "ratio": 0.18,
+    "y": 798,
+    "documentHeight": 5333,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-desktop-scroll-stage-2.png",
+    "visible": [
+      "Build agents on infrastructure that thinks like them",
+      "Notion powers millions of agent conversations daily on Vercel."
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    "index": 3,
+    "ratio": 0.36,
+    "y": 1596,
+    "documentHeight": 5333,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-desktop-scroll-stage-3.png",
+    "visible": [
+      "Ship apps that scale from zero to millions instantly",
+      "Zapier serves over 100 million monthly website visits on Vercel."
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    "index": 4,
+    "ratio": 0.54,
+    "y": 2394,
+    "documentHeight": 5333,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-desktop-scroll-stage-4.png",
+    "visible": [
+      "Host platforms that serve every customer",
+      "Mintlify powers documentation for over 20,000 companies on Vercel."
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    "index": 5,
+    "ratio": 0.72,
+    "y": 3192,
+    "documentHeight": 5333,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-desktop-scroll-stage-5.png",
+    "visible": [
+      "Mintlify powers documentation for over 20,000 companies on Vercel.",
+      "Recently shipped",
+      "VERCEL",
+      "PASSPORT",
+      "PASAPORTE",
+      "PASSAPORTO",
+      "パスポート",
+      "Passport",
+      "Secure every internal agent, app, and deployment with your identity provider."
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    "index": 6,
+    "ratio": 0.9,
+    "y": 3990,
+    "documentHeight": 5333,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-desktop-scroll-stage-6.png",
+    "visible": [
+      "A framework for building durable agents.",
+      "ISS 2026",
+      "Passport",
+      "Secure every internal agent, app, and deployment with your identity provider.",
+      "▲ vercel deploy",
+      "Vercel CLI",
+      "Production: https://my-server.vercel.app",
+      "Containers",
+      "Run production workloads in isolated containers on Vercel.",
+      "Built by you, or your agents"
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    "index": 7,
+    "ratio": 1,
+    "y": 4433,
+    "documentHeight": 5333,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-desktop-scroll-stage-7.png",
+    "visible": [
+      "Built by you, or your agents",
+      "Agent Stack",
+      "Core Platform",
+      "Security",
+      "Tools",
+      "Frameworks",
+      "SDKs"
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "index": 1,
+    "ratio": 0,
+    "y": 0,
+    "documentHeight": 4981,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-mobile-scroll-stage-1.png",
+    "visible": [
+      "Agentic Infrastructure",
+      "xybovbxodyncgycvzemzrts For coding agents to ship apps and agents automated by agents."
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "index": 2,
+    "ratio": 0.18,
+    "y": 745,
+    "documentHeight": 4981,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-mobile-scroll-stage-2.png",
+    "visible": [
+      "Build agents on infrastructure that thinks like them",
+      "Notion powers millions of agent conversations daily on Vercel."
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "index": 3,
+    "ratio": 0.36,
+    "y": 1489,
+    "documentHeight": 4981,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-mobile-scroll-stage-3.png",
+    "visible": [
+      "Notion powers millions of agent conversations daily on Vercel.",
+      "Ship apps that scale from zero to millions instantly",
+      "Zapier serves over 100 million monthly website visits on Vercel."
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "index": 4,
+    "ratio": 0.54,
+    "y": 2234,
+    "documentHeight": 4981,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-mobile-scroll-stage-4.png",
+    "visible": [
+      "Zapier serves over 100 million monthly website visits on Vercel.",
+      "Host platforms that serve every customer",
+      "Mintlify powers documentation for over 20,000 companies on Vercel."
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "index": 5,
+    "ratio": 0.72,
+    "y": 2979,
+    "documentHeight": 4981,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-mobile-scroll-stage-5.png",
+    "visible": [
+      "Mintlify powers documentation for over 20,000 companies on Vercel.",
+      "Recently shipped",
+      "A framework for building durable agents.",
+      "VERCEL",
+      "PASSPORT",
+      "PASAPORTE",
+      "PASSAPORTO",
+      "パスポート",
+      "Passport",
+      "Secure every internal agent, app, and deployment with your identity provider."
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "index": 6,
+    "ratio": 0.9,
+    "y": 3723,
+    "documentHeight": 4981,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-mobile-scroll-stage-6.png",
+    "visible": [
+      "VERCEL",
+      "PASSPORT",
+      "PASAPORTE",
+      "PASSAPORTO",
+      "パスポート",
+      "ISS 2026",
+      "Passport",
+      "Secure every internal agent, app, and deployment with your identity provider.",
+      "▲ vercel deploy",
+      "Vercel CLI",
+      "Production: https://my-server.vercel.app",
+      "Containers",
+      "Run production workloads in isolated containers on Vercel.",
+      "Built by you, or your agents"
+    ]
+  },
+  {
+    "viewport": {
+      "slug": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "index": 7,
+    "ratio": 1,
+    "y": 4137,
+    "documentHeight": 4981,
+    "screenshot": "docs/artifacts/homepage-reference-audit/2026-08-03/vercel-mobile-scroll-stage-7.png",
+    "visible": [
+      "Production: https://my-server.vercel.app",
+      "Built by you, or your agents",
+      "Agent Stack",
+      "Core Platform"
+    ]
+  }
+]

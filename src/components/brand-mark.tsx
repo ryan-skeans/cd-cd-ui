@@ -9,7 +9,7 @@ export default function BrandMark({ inverse = false }: { inverse?: boolean }) {
             </span>
             <span>
                 <span className="block text-sm font-semibold tracking-tight">ClaimDefender</span>
-                <span className={`block text-[9px] uppercase tracking-[0.16em] ${inverse ? "text-white/50" : "text-brand-olive/45"}`}>Weather evidence</span>
+                <span className={`block text-[9px] uppercase tracking-[0.16em] ${inverse ? "text-white/60" : "text-brand-olive/70"}`}>Weather evidence</span>
             </span>
         </Link>
     );

@@ -1,0 +1,604 @@
+{
+  "generatedAt": "2026-08-03T17:04:48.894Z",
+  "results": [
+    {
+      "viewport": {
+        "slug": "mobile-390x844",
+        "width": 390,
+        "height": 844
+      },
+      "httpStatus": 200,
+      "screenshot": "docs/artifacts/homepage-final/2026-08-03/homepage-after-mobile-390x844-full.png",
+      "viewportScreenshot": "docs/artifacts/homepage-final/2026-08-03/homepage-after-mobile-390x844-viewport.png",
+      "diagnostics": {
+        "title": "ClaimDefender — Property weather evidence, clearly sourced",
+        "document": {
+          "width": 390,
+          "height": 12985
+        },
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "h1Count": 1,
+        "headings": [
+          {
+            "level": "h1",
+            "text": "See the weather record around a property—clearly sourced and in order."
+          },
+          {
+            "level": "h2",
+            "text": "What the ClaimDefender evidence preview preserves"
+          },
+          {
+            "level": "h2",
+            "text": "From a property question to an inspectible source trail."
+          },
+          {
+            "level": "h3",
+            "text": "Choose a property and approximate date"
+          },
+          {
+            "level": "h3",
+            "text": "Review returned records in context"
+          },
+          {
+            "level": "h3",
+            "text": "Inspect the report and source trail"
+          },
+          {
+            "level": "h2",
+            "text": "A timeline that does not blur measured, reported, and warned."
+          },
+          {
+            "level": "h3",
+            "text": "Weather-event chronology"
+          },
+          {
+            "level": "h2",
+            "text": "One evidence model. Two ways into the work."
+          },
+          {
+            "level": "h3",
+            "text": "Understand what available weather records show around your property."
+          },
+          {
+            "level": "h3",
+            "text": "Prepare consistent evidence packages around client properties."
+          },
+          {
+            "level": "h2",
+            "text": "A source label is part of the evidence."
+          },
+          {
+            "level": "h3",
+            "text": "Useful context, bounded conclusions"
+          },
+          {
+            "level": "h3",
+            "text": "Demo and data handling"
+          },
+          {
+            "level": "h3",
+            "text": "Expanded satellite comparison"
+          },
+          {
+            "level": "h2",
+            "text": "Useful when the question begins with “what do the records show?”"
+          },
+          {
+            "level": "h3",
+            "text": "Review a reported weather date"
+          },
+          {
+            "level": "h3",
+            "text": "Prepare for a property conversation"
+          },
+          {
+            "level": "h3",
+            "text": "Document what the records do—and do not—show"
+          },
+          {
+            "level": "h3",
+            "text": "Repeat a consistent professional workflow"
+          },
+          {
+            "level": "h2",
+            "text": "Review the weather record around the property date you want to understand."
+          }
+        ],
+        "landmarks": {
+          "header": 2,
+          "main": 1,
+          "footer": 2,
+          "nav": 3
+        },
+        "links": [
+          "#main-content",
+          "/",
+          "/#how-it-works",
+          "/homeowners",
+          "/professionals",
+          "/#methodology",
+          "/homeowners#investigation",
+          "/sample-report",
+          "#methodology"
+        ],
+        "overflow": [
+          {
+            "element": "div",
+            "className": "absolute -inset-5 rounded-[2.5rem] bg-brand-lime/15 blur-3xl",
+            "text": "",
+            "left": -4,
+            "right": 394,
+            "width": 398
+          }
+        ],
+        "unnamed": [],
+        "undersized": [],
+        "duplicateIds": []
+      },
+      "interactionChecks": [
+        {
+          "control": "All records",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "Measured",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "Reported",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "Warnings",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "mobile navigation",
+          "open": true,
+          "visibleLinks": 6
+        }
+      ],
+      "consoleErrors": [],
+      "requestFailures": []
+    },
+    {
+      "viewport": {
+        "slug": "tablet-768x1024",
+        "width": 768,
+        "height": 1024
+      },
+      "httpStatus": 200,
+      "screenshot": "docs/artifacts/homepage-final/2026-08-03/homepage-after-tablet-768x1024-full.png",
+      "viewportScreenshot": "docs/artifacts/homepage-final/2026-08-03/homepage-after-tablet-768x1024-viewport.png",
+      "diagnostics": {
+        "title": "ClaimDefender — Property weather evidence, clearly sourced",
+        "document": {
+          "width": 768,
+          "height": 9642
+        },
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "h1Count": 1,
+        "headings": [
+          {
+            "level": "h1",
+            "text": "See the weather record around a property—clearly sourced and in order."
+          },
+          {
+            "level": "h2",
+            "text": "What the ClaimDefender evidence preview preserves"
+          },
+          {
+            "level": "h2",
+            "text": "From a property question to an inspectible source trail."
+          },
+          {
+            "level": "h3",
+            "text": "Choose a property and approximate date"
+          },
+          {
+            "level": "h3",
+            "text": "Review returned records in context"
+          },
+          {
+            "level": "h3",
+            "text": "Inspect the report and source trail"
+          },
+          {
+            "level": "h2",
+            "text": "A timeline that does not blur measured, reported, and warned."
+          },
+          {
+            "level": "h3",
+            "text": "Weather-event chronology"
+          },
+          {
+            "level": "h2",
+            "text": "One evidence model. Two ways into the work."
+          },
+          {
+            "level": "h3",
+            "text": "Understand what available weather records show around your property."
+          },
+          {
+            "level": "h3",
+            "text": "Prepare consistent evidence packages around client properties."
+          },
+          {
+            "level": "h2",
+            "text": "A source label is part of the evidence."
+          },
+          {
+            "level": "h3",
+            "text": "Useful context, bounded conclusions"
+          },
+          {
+            "level": "h3",
+            "text": "Demo and data handling"
+          },
+          {
+            "level": "h3",
+            "text": "Expanded satellite comparison"
+          },
+          {
+            "level": "h2",
+            "text": "Useful when the question begins with “what do the records show?”"
+          },
+          {
+            "level": "h3",
+            "text": "Review a reported weather date"
+          },
+          {
+            "level": "h3",
+            "text": "Prepare for a property conversation"
+          },
+          {
+            "level": "h3",
+            "text": "Document what the records do—and do not—show"
+          },
+          {
+            "level": "h3",
+            "text": "Repeat a consistent professional workflow"
+          },
+          {
+            "level": "h2",
+            "text": "Review the weather record around the property date you want to understand."
+          }
+        ],
+        "landmarks": {
+          "header": 2,
+          "main": 1,
+          "footer": 2,
+          "nav": 3
+        },
+        "links": [
+          "#main-content",
+          "/",
+          "/#how-it-works",
+          "/homeowners",
+          "/professionals",
+          "/#methodology",
+          "/homeowners#investigation",
+          "/sample-report",
+          "#methodology"
+        ],
+        "overflow": [],
+        "unnamed": [],
+        "undersized": [
+          {
+            "element": "a",
+            "text": "View the fictional sample report",
+            "width": 218,
+            "height": 16
+          }
+        ],
+        "duplicateIds": []
+      },
+      "interactionChecks": [
+        {
+          "control": "All records",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "Measured",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "Reported",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "Warnings",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "mobile navigation",
+          "open": true,
+          "visibleLinks": 6
+        }
+      ],
+      "consoleErrors": [],
+      "requestFailures": []
+    },
+    {
+      "viewport": {
+        "slug": "desktop-1440x900",
+        "width": 1440,
+        "height": 900
+      },
+      "httpStatus": 200,
+      "screenshot": "docs/artifacts/homepage-final/2026-08-03/homepage-after-desktop-1440x900-full.png",
+      "viewportScreenshot": "docs/artifacts/homepage-final/2026-08-03/homepage-after-desktop-1440x900-viewport.png",
+      "diagnostics": {
+        "title": "ClaimDefender — Property weather evidence, clearly sourced",
+        "document": {
+          "width": 1440,
+          "height": 6997
+        },
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "h1Count": 1,
+        "headings": [
+          {
+            "level": "h1",
+            "text": "See the weather record around a property—clearly sourced and in order."
+          },
+          {
+            "level": "h2",
+            "text": "What the ClaimDefender evidence preview preserves"
+          },
+          {
+            "level": "h2",
+            "text": "From a property question to an inspectible source trail."
+          },
+          {
+            "level": "h3",
+            "text": "Choose a property and approximate date"
+          },
+          {
+            "level": "h3",
+            "text": "Review returned records in context"
+          },
+          {
+            "level": "h3",
+            "text": "Inspect the report and source trail"
+          },
+          {
+            "level": "h2",
+            "text": "A timeline that does not blur measured, reported, and warned."
+          },
+          {
+            "level": "h3",
+            "text": "Weather-event chronology"
+          },
+          {
+            "level": "h2",
+            "text": "One evidence model. Two ways into the work."
+          },
+          {
+            "level": "h3",
+            "text": "Understand what available weather records show around your property."
+          },
+          {
+            "level": "h3",
+            "text": "Prepare consistent evidence packages around client properties."
+          },
+          {
+            "level": "h2",
+            "text": "A source label is part of the evidence."
+          },
+          {
+            "level": "h3",
+            "text": "Useful context, bounded conclusions"
+          },
+          {
+            "level": "h3",
+            "text": "Demo and data handling"
+          },
+          {
+            "level": "h3",
+            "text": "Expanded satellite comparison"
+          },
+          {
+            "level": "h2",
+            "text": "Useful when the question begins with “what do the records show?”"
+          },
+          {
+            "level": "h3",
+            "text": "Review a reported weather date"
+          },
+          {
+            "level": "h3",
+            "text": "Prepare for a property conversation"
+          },
+          {
+            "level": "h3",
+            "text": "Document what the records do—and do not—show"
+          },
+          {
+            "level": "h3",
+            "text": "Repeat a consistent professional workflow"
+          },
+          {
+            "level": "h2",
+            "text": "Review the weather record around the property date you want to understand."
+          }
+        ],
+        "landmarks": {
+          "header": 2,
+          "main": 1,
+          "footer": 2,
+          "nav": 3
+        },
+        "links": [
+          "#main-content",
+          "/",
+          "/#how-it-works",
+          "/homeowners",
+          "/professionals",
+          "/#methodology",
+          "/homeowners#investigation",
+          "/sample-report",
+          "#methodology"
+        ],
+        "overflow": [],
+        "unnamed": [],
+        "undersized": [
+          {
+            "element": "a",
+            "text": "View the fictional sample report",
+            "width": 218,
+            "height": 16
+          }
+        ],
+        "duplicateIds": []
+      },
+      "interactionChecks": [
+        {
+          "control": "All records",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "Measured",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "Reported",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        },
+        {
+          "control": "Warnings",
+          "pressed": "true",
+          "controls": ":R4rjsq:"
+        }
+      ],
+      "consoleErrors": [],
+      "requestFailures": []
+    }
+  ],
+  "routeChecks": [
+    {
+      "href": "#main-content",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3001/#main-content",
+      "fragmentExists": true
+    },
+    {
+      "href": "/",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3001/",
+      "fragmentExists": null
+    },
+    {
+      "href": "/#how-it-works",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3001/#how-it-works",
+      "fragmentExists": true
+    },
+    {
+      "href": "/homeowners",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3001/homeowners",
+      "fragmentExists": null
+    },
+    {
+      "href": "/professionals",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3001/professionals",
+      "fragmentExists": null
+    },
+    {
+      "href": "/#methodology",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3001/#methodology",
+      "fragmentExists": true
+    },
+    {
+      "href": "/homeowners#investigation",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3001/homeowners#investigation",
+      "fragmentExists": true
+    },
+    {
+      "href": "/sample-report",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3001/sample-report",
+      "fragmentExists": null
+    },
+    {
+      "href": "#methodology",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3001/#methodology",
+      "fragmentExists": true
+    }
+  ],
+  "keyboardChecks": {
+    "tabOrder": [
+      {
+        "element": "a",
+        "text": "Skip to main content",
+        "href": "#main-content"
+      },
+      {
+        "element": "a",
+        "text": "ClaimDefenderWeather evidence",
+        "href": "/"
+      },
+      {
+        "element": "summary",
+        "text": "Open navigation",
+        "href": null
+      },
+      {
+        "element": "a",
+        "text": "Check a property",
+        "href": "/homeowners#investigation"
+      },
+      {
+        "element": "a",
+        "text": "For professionals",
+        "href": "/professionals"
+      },
+      {
+        "element": "a",
+        "text": "View the fictional sample report",
+        "href": "/sample-report"
+      },
+      {
+        "element": "a",
+        "text": "Read the evidence method",
+        "href": "#methodology"
+      },
+      {
+        "element": "button",
+        "text": "All records",
+        "href": null
+      },
+      {
+        "element": "button",
+        "text": "Measured",
+        "href": null
+      }
+    ],
+    "menuKeyboardOpen": true,
+    "filterKeyboardPressed": "true"
+  }
+}
