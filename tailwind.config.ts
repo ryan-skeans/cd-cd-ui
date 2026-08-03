@@ -8,15 +8,23 @@ const config: Config = {
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	theme: {
-		extend: {
+			extend: {
 			colors: {
 				brand: {
-					olive: '#333629',    // Dark olive for sidebar
-					oliveDark: '#292B1F', // Darker variant
-					lime: '#D4F35E',     // Bright lime green for buttons
+					forest: '#333629',
+					forestDark: '#292B1F',
+					olive: '#333629', // Backward-compatible alias for forest.
+					oliveDark: '#292B1F', // Backward-compatible alias for forestDark.
+					oliveSoft: '#5D684F',
+					sage: '#A7B38A',
+					lime: '#D4F35E', // Action and active-state accent, not logo ink.
 					limeLight: '#E6F8A3',
-					offWhite: '#F8F9F5', // Light background for right side
-					gray: '#EBEBEB',     // borders/lines
+					offWhite: '#F8F9F5',
+					stone: '#F1F2EC',
+					charcoal: '#1A1D1B',
+					slate: '#687065',
+					border: '#E3E6DC',
+					gray: '#E3E6DC', // Backward-compatible alias for border.
 				},
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',

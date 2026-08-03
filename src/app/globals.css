@@ -10,13 +10,23 @@
 
 @layer base {
   :root {
-    /* Professional evidence workspace: light, low-noise surfaces keep data legible. */
+    /* Evidence-first brand roles. Lime is reserved for actions and active state. */
+    --brand-forest: #333629;
+    --brand-forest-dark: #292B1F;
+    --brand-olive-soft: #5D684F;
+    --brand-sage: #A7B38A;
+    --brand-off-white: #F8F9F5;
+    --brand-stone: #F1F2EC;
+    --brand-charcoal: #1A1D1B;
+    --brand-slate: #687065;
+    --brand-border: #E3E6DC;
+    --brand-lime: #D4F35E;
     --background: 80 24% 97%;
-    --foreground: 72 7% 19%;
+    --foreground: 150 5% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 72 7% 19%;
+    --card-foreground: 150 5% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 72 7% 19%;
+    --popover-foreground: 150 5% 11%;
     --primary: 72 7% 19%;
     --primary-foreground: 0 0% 100%;
     --secondary: 80 18% 94%;
@@ -27,8 +37,8 @@
     --accent-foreground: 72 7% 19%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 75 13% 88%;
-    --input: 75 13% 88%;
+    --border: 76 16% 88%;
+    --input: 76 16% 88%;
     --ring: 72 7% 19%;
     --chart-1: 72 7% 19%;
     --chart-2: 200 55% 45%;
@@ -166,7 +176,7 @@ body {
 .mapboxgl-ctrl-geocoder {
   background-color: white !important;
   color: #333629 !important;
-  border: 1px solid #EBEBEB !important;
+  border: 1px solid #E3E6DC !important;
   border-radius: var(--radius) !important;
 }
 

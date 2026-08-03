@@ -1,7 +1,8 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { Radar, Database, Cloud, Shield } from "lucide-react";
+import { ClaimDefenderMark } from "@/components/brand/claim-defender-mark";
+import { Database, Cloud, ShieldAlert } from "lucide-react";
 
 export default function LoadingState() {
     return (
@@ -26,9 +27,9 @@ export default function LoadingState() {
                         />
                     </div>
 
-                    {/* Center radar icon */}
+                    {/* The compact property mark remains identifiable without relying on motion. */}
                     <div className="relative z-10 w-16 h-16 bg-brand-olive/5 rounded-full flex items-center justify-center border border-brand-olive/20">
-                        <Radar className="w-8 h-8 text-brand-olive animate-radar-sweep" />
+                        <ClaimDefenderMark variant="compact" className="h-10 w-10 text-brand-olive" />
                     </div>
                 </div>
 
@@ -62,7 +63,7 @@ export default function LoadingState() {
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Shield className="w-4 h-4 text-brand-olive/30 animate-pulse" style={{ animationDelay: "1.4s" }} />
+                        <ShieldAlert className="w-4 h-4 text-brand-olive/30 animate-pulse" style={{ animationDelay: "1.4s" }} />
                         <div className="flex-1">
                             <div className="text-xs text-brand-olive/60 mb-1">
                                 Checking historical warnings…

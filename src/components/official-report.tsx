@@ -6,6 +6,8 @@ import { format } from "date-fns";
 import { AlertTriangle, Database, Download, FileCheck, MapPin, RefreshCw, ShieldCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReportPdfDialog from "@/components/report-pdf-dialog";
+import { ClaimDefenderLogo } from "@/components/brand/claim-defender-logo";
+import { ClaimDefenderPdfMark } from "@/components/brand/claim-defender-pdf-mark";
 import { Button } from "@/components/ui/button";
 import {
     buildEvidenceSummary,
@@ -48,7 +50,10 @@ export interface ReportContext {
 }
 
 const styles = StyleSheet.create({
-    page: { padding: 36, fontSize: 8.5, color: "#333629", lineHeight: 1.45 },
+    page: { padding: 32, fontSize: 8.5, color: "#333629", lineHeight: 1.45 },
+    brandRow: { flexDirection: "row", alignItems: "center", gap: 7, marginBottom: 9 },
+    brandWordmark: { color: "#1A1D1B", fontSize: 13, fontWeight: 700, letterSpacing: -0.35 },
+    brandTagline: { color: "#5D684F", fontSize: 5.5, letterSpacing: 0.8, marginTop: 2 },
     eyebrow: { color: "#68705b", fontSize: 7.5, letterSpacing: 1.1, marginBottom: 6 },
     // The page's body line height is inherited as a fixed point value by react-pdf.
     // Recalculate it for the larger heading so the subtitle cannot enter its line box.
@@ -57,7 +62,7 @@ const styles = StyleSheet.create({
     disclosure: { padding: 9, backgroundColor: "#f2f6db", marginBottom: 14 },
     customizedDisclosure: { color: "#5d6852", fontSize: 7, marginTop: -7, marginBottom: 11 },
     logo: { width: 72, maxHeight: 32, objectFit: "contain", marginBottom: 8 },
-    section: { marginTop: 15 },
+    section: { marginTop: 11 },
     heading: { fontSize: 11, fontWeight: 700, marginBottom: 7 },
     row: { flexDirection: "row", gap: 7 },
     box: { flexGrow: 1, flexBasis: 0, padding: 8, backgroundColor: "#f4f5f0" },
@@ -143,8 +148,9 @@ export function PdfDocument({ report, context, configuration }: { report: Report
         : data.timeline;
     return <Document>
         <Page size="LETTER" style={styles.page}>
+            <View style={styles.brandRow}><ClaimDefenderPdfMark /><View><Text style={styles.brandWordmark}>ClaimDefender</Text><Text style={styles.brandTagline}>WEATHER EVIDENCE. CLEARLY DOCUMENTED.</Text></View></View>
             {professional && context.organization?.logoDataUrl && <PdfImage src={context.organization.logoDataUrl} style={styles.logo} />}
-            <Text style={styles.eyebrow}>CLAIMDEFENDER · {professional ? "DEMO EVIDENCE PACKAGE" : "DEMO PROPERTY EVIDENCE REPORT"}</Text>
+            <Text style={styles.eyebrow}>{professional ? "DEMO EVIDENCE PACKAGE" : "DEMO PROPERTY EVIDENCE REPORT"}</Text>
             <Text style={styles.title}>{professional ? `${context.organization?.name ?? "Professional"} evidence package` : "Property weather evidence"}</Text>
             <Text style={styles.sub}>{reportId(report, context)} · Generated {readableEvidenceDate(data.generatedAt, data.property.timeZone)}</Text>
             {resolvedConfiguration.isCustomized && <Text style={styles.customizedDisclosure}>{customizedReportDisclosure(reportId(report, context))}</Text>}
@@ -156,7 +162,8 @@ export function PdfDocument({ report, context, configuration }: { report: Report
             <Text style={styles.footer}>Observed values were measured at identified locations. Nearby reports occurred at reported locations, and warnings describe warned areas. These categories are not interchangeable.</Text>
         </Page>
         <Page size="LETTER" style={styles.page}>
-            <Text style={styles.eyebrow}>CLAIMDEFENDER · DEMO SOURCE APPENDIX</Text><Text style={styles.title}>Sources, methodology, and limitations</Text><Text style={styles.sub}>{reportId(report, context)} · Retrieval {readableEvidenceDate(data.generatedAt, data.property.timeZone)}</Text>
+            <View style={styles.brandRow}><ClaimDefenderPdfMark size={26} /><View><Text style={styles.brandWordmark}>ClaimDefender</Text><Text style={styles.brandTagline}>WEATHER EVIDENCE. CLEARLY DOCUMENTED.</Text></View></View>
+            <Text style={styles.eyebrow}>DEMO SOURCE APPENDIX</Text><Text style={styles.title}>Sources, methodology, and limitations</Text><Text style={styles.sub}>{reportId(report, context)} · Retrieval {readableEvidenceDate(data.generatedAt, data.property.timeZone)}</Text>
             <View style={styles.section}><Text style={styles.heading}>Source retrieval status</Text>{data.sources.map((source) => <View key={source.id} style={styles.sourceRow}><Text style={styles.sourceName}>{source.provider}{"\n"}{source.dataset}</Text><Text style={styles.sourceStatus}>{sourceStatus(source.status)}{"\n"}{source.recordCount} record(s)</Text><Text style={styles.sourceCaveat}>{source.message ?? source.limitations[0]}{"\n"}Retrieved: {readableEvidenceDate(source.retrievedAt, data.property.timeZone)}</Text></View>)}</View>
             {includes("weather.precipitation") && <View style={styles.section}><Text style={styles.heading}>Precipitation context</Text><Text>Station: {data.precipitation.stationName ?? "Not available"} ({data.precipitation.stationId ?? "no station ID"})</Text><Text>Event day: {formatMeasurement(data.precipitation.eventDayTotalInches, "in")}</Text><Text>Prior 24 / 72 hours: {formatMeasurement(data.precipitation.prior24HoursInches, "in")} / {formatMeasurement(data.precipitation.prior72HoursInches, "in")}</Text><Text>Prior seven days: {formatMeasurement(data.precipitation.priorSevenDaysInches, "in")}</Text></View>}
             {data.dataQualityWarnings.length > 0 && <View style={styles.section}><Text style={styles.heading}>Data-quality notices</Text>{data.dataQualityWarnings.map((warning) => <Text key={warning} style={styles.note}>• {warning}</Text>)}</View>}
@@ -235,7 +242,7 @@ export default function OfficialReport({ report, context = { audience: "homeowne
     };
 
     return <section className="mx-auto w-full max-w-5xl space-y-6 animate-in fade-in-0 slide-in-from-bottom-6 duration-500">
-        <div className="rounded-3xl bg-brand-olive p-6 text-white shadow-xl sm:p-8"><div className="flex flex-col items-start justify-between gap-5 sm:flex-row"><div className="flex items-start gap-4">{professional && context.organization?.logoDataUrl && <img src={context.organization.logoDataUrl} alt={`${context.organization.name} logo`} className="h-12 w-20 rounded-lg bg-white object-contain p-1" />}<div><div className="mb-3 flex items-center gap-2 text-brand-lime"><FileCheck className="h-5 w-5" /><span className="text-xs font-bold uppercase tracking-[.16em]">{professional ? "Demo Evidence Package" : "Demo Property Evidence Report"}</span></div><h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">{professional ? context.organization?.name ?? "Professional Evidence Package" : "Property Weather Evidence Report"}</h2><p className="mt-2 text-sm text-white/65">{reportId(report, context)} · Generated {readableEvidenceDate(data.generatedAt, data.property.timeZone)}</p></div></div><Button ref={pdfButtonRef} onClick={openPdfFlow} disabled={preparing} className="min-h-11 bg-brand-lime font-bold text-brand-olive hover:bg-brand-limeLight"><Download className="mr-2 h-4 w-4" />Generate PDF</Button></div><div className="mt-6 flex gap-3 rounded-xl border border-white/10 bg-white/5 p-4 text-xs leading-relaxed text-white/65"><ShieldCheck className="h-4 w-4 shrink-0 text-brand-lime" />This report preserves classifications and source limitations. It does not determine coverage, causation, physical damage, or claim outcome.</div></div>
+        <div className="rounded-3xl bg-brand-olive p-6 text-white shadow-xl sm:p-8"><ClaimDefenderLogo variant="navigation" inverted className="mb-7" /><div className="flex flex-col items-start justify-between gap-5 sm:flex-row"><div className="flex items-start gap-4">{professional && context.organization?.logoDataUrl && <img src={context.organization.logoDataUrl} alt={`${context.organization.name} logo`} className="h-12 w-20 rounded-lg bg-white object-contain p-1" />}<div><div className="mb-3 flex items-center gap-2 text-brand-lime"><FileCheck className="h-5 w-5" /><span className="text-xs font-bold uppercase tracking-[.16em]">{professional ? "Demo Evidence Package" : "Demo Property Evidence Report"}</span></div><h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">{professional ? context.organization?.name ?? "Professional Evidence Package" : "Property Weather Evidence Report"}</h2><p className="mt-2 text-sm text-white/65">{reportId(report, context)} · Generated {readableEvidenceDate(data.generatedAt, data.property.timeZone)}</p></div></div><Button ref={pdfButtonRef} onClick={openPdfFlow} disabled={preparing} className="min-h-11 bg-brand-lime font-bold text-brand-olive hover:bg-brand-limeLight"><Download className="mr-2 h-4 w-4" />Generate PDF</Button></div><div className="mt-6 flex gap-3 rounded-xl border border-white/10 bg-white/5 p-4 text-xs leading-relaxed text-white/65"><ShieldCheck className="h-4 w-4 shrink-0 text-brand-lime" />This report preserves classifications and source limitations. It does not determine coverage, causation, physical damage, or claim outcome.</div></div>
         <ReportPdfDialog open={pdfDialogOpen} onOpenChange={(open) => { if (!preparing) { setPdfDialogOpen(open); if (!open) setError(null); } }} onGenerate={download} onCustomizeOpened={() => trackDemoEvent("customize_report_pdf_opened", { audience: context.audience, availableContentCount: getAvailableReportContent(customizationInput).length, recommendedContentCount: getRecommendedReportContent(customizationInput).length })} onRecommendationsRestored={() => trackDemoEvent("customized_report_recommendations_restored", { audience: context.audience })} input={customizationInput} preparing={preparing} error={error} returnFocusRef={pdfButtonRef} />
         {professional && contextRows.length > 0 && <div className="rounded-2xl border border-brand-gray/60 bg-white p-5 sm:p-6"><h3 className="font-semibold text-brand-olive">Professional package context</h3><dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{contextRows.map(([label, value]) => <div key={label}><dt className="text-[10px] font-bold uppercase tracking-wider text-brand-olive/45">{label}</dt><dd className="mt-1 text-sm text-brand-olive">{value}</dd></div>)}</dl>{context.claim?.notes && <div className="mt-4 border-t border-brand-gray pt-4"><p className="text-[10px] font-bold uppercase tracking-wider text-brand-olive/45">Internal notes</p><p className="mt-1 text-sm leading-relaxed text-brand-olive/65">{context.claim.notes}</p></div>}</div>}
         <div className="grid gap-5 md:grid-cols-[1.35fr_.65fr]"><div className="rounded-2xl border border-brand-gray/60 bg-white p-5"><h3 className="font-semibold text-brand-olive">{professional ? "Property and event" : "Property and date"}</h3><p className="mt-3 flex items-start gap-2 text-sm text-brand-olive/70"><MapPin className="mt-0.5 h-4 w-4 shrink-0" />{propertyLabel(report)}</p><p className="mt-2 text-sm text-brand-olive/70">Approximate date: {format(report.date, "MMMM d, yyyy")} · {data.property.timeZone}</p><p className="mt-1 text-xs text-brand-olive/45">Coordinates: {report.latitude.toFixed(4)}, {report.longitude.toFixed(4)}</p></div><div className="rounded-2xl border border-brand-lime/40 bg-brand-lime/20 p-5 text-brand-olive"><div className="flex items-center gap-2"><Database className="h-4 w-4" /><p className="text-xs font-bold uppercase tracking-wider">Record inventory</p></div><p className="mt-3 text-sm font-semibold leading-relaxed">{data.records.localStormReports.length} local reports<br />{data.records.warnings.length} warnings<br />{data.records.stationObservations.length} station records<br />{data.timeline.length} timeline entries</p></div></div>

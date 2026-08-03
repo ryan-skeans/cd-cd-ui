@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClaimDefender brand size validation</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f8f9f5; color: #1a1d1b; font-family: Inter, Arial, sans-serif; }
+    main { width: 1180px; min-height: 820px; margin: 0 auto; padding: 56px; }
+    .eyebrow { color: #5d684f; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 12px 0 8px; font-size: 34px; letter-spacing: -.04em; }
+    .intro { margin: 0; color: #687065; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 24px; margin-top: 38px; }
+    .panel { border: 1px solid #e3e6dc; border-radius: 24px; background: #fff; padding: 28px; }
+    .panel.dark { background: #333629; color: #f8f9f5; }
+    h2 { margin: 0 0 22px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+    .sizes { display: flex; align-items: end; gap: 34px; min-height: 180px; }
+    .sample { text-align: center; color: #687065; font-size: 11px; }
+    .sample img { display: block; margin: 0 auto 12px; }
+    .dark .sample { color: rgba(248,249,245,.65); }
+    .lockups { display: grid; gap: 24px; }
+    .lockup { border-top: 1px solid #e3e6dc; padding-top: 24px; }
+    .lockup:first-child { border-top: 0; padding-top: 0; }
+    .lockup img { display: block; max-width: 100%; }
+    .primary { width: 590px; }
+    .navigation { width: 340px; }
+    .app { width: 128px; border-radius: 24px; }
+    .note { margin-top: 26px; color: #687065; font-size: 12px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Responsive identity validation</p>
+    <h1>ClaimDefender logo system</h1>
+    <p class="intro">Every application preserves the exact user-supplied compound SVG path.</p>
+    <div class="grid">
+      <section class="panel">
+        <h2>Large and navigation lockups</h2>
+        <div class="lockups">
+          <div class="lockup"><img class="primary" src="../../../public/brand/claim-defender-primary.svg" alt="Primary ClaimDefender logo"></div>
+          <div class="lockup"><img class="navigation" src="../../../public/brand/claim-defender-navigation.svg" alt="Navigation ClaimDefender logo"></div>
+        </div>
+      </section>
+      <section class="panel">
+        <h2>Product icon</h2>
+        <img class="app" src="../../../public/brand/claim-defender-app-icon.svg" alt="ClaimDefender app icon">
+        <p class="note">Flat forest field, exact off-white master mark, no gradient, texture, filters, or path edits.</p>
+      </section>
+      <section class="panel">
+        <h2>Reduction test</h2>
+        <div class="sizes">
+          <div class="sample"><img src="../../../public/brand/favicon.svg" width="16" height="16" alt="">16 px</div>
+          <div class="sample"><img src="../../../public/brand/favicon.svg" width="32" height="32" alt="">32 px</div>
+          <div class="sample"><img src="../../../public/brand/claim-defender-compact.svg" width="48" height="48" alt="">48 px</div>
+          <div class="sample"><img src="../../../public/brand/claim-defender-compact.svg" width="64" height="64" alt="">64 px</div>
+          <div class="sample"><img src="../../../public/brand/claim-defender-mark.svg" width="128" height="128" alt="">128 px</div>
+        </div>
+      </section>
+      <section class="panel dark">
+        <h2>Inverted compact mark</h2>
+        <div class="sizes">
+          <div class="sample"><img src="../../../public/brand/claim-defender-compact-inverted.svg" width="32" height="32" alt="">32 px</div>
+          <div class="sample"><img src="../../../public/brand/claim-defender-compact-inverted.svg" width="64" height="64" alt="">64 px</div>
+          <div class="sample"><img src="../../../public/brand/claim-defender-compact-inverted.svg" width="128" height="128" alt="">128 px</div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

@@ -130,7 +130,7 @@ export function HomepageHero({ data }: { data: SearchResponse }) {
                             <span className="h-1.5 w-1.5 rounded-full bg-brand-lime ring-2 ring-brand-olive" aria-hidden="true" /> Property-specific weather evidence · Demo
                         </p>
                         <h1 className="mt-6 max-w-[720px] text-balance text-[2.65rem] font-semibold leading-[1.02] tracking-[-0.055em] text-brand-olive sm:text-6xl lg:text-[4rem]">
-                            See the weather record around a property—clearly sourced and in order.
+                            See the weather record around a property, clearly sourced and organized by time.
                         </h1>
                         <p className="mt-6 max-w-2xl text-base leading-7 text-brand-olive/70 sm:text-lg sm:leading-8">
                             Search a property and approximate date. ClaimDefender organizes available station observations, nearby storm reports, warning context, precipitation, and source details into an impact timeline and report preview.

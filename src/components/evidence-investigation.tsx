@@ -12,7 +12,7 @@ import DemoUnlockModal from "@/components/demo-unlock-modal";
 import OfficialReport from "@/components/official-report";
 import { FEATURED_DEMO_INVESTIGATION, featuredDemoDisplayDate } from "@/lib/demo-investigation";
 import { trackDemoEvent } from "@/lib/demo-analytics";
-import { ShieldCheck, MapPin, Calendar, ArrowRight, Database, Sparkles } from "lucide-react";
+import { MapPin, Calendar, ArrowRight, Database, MapPinned, Gauge, RadioTower, FileCheck2 } from "lucide-react";
 
 function EvidenceInvestigationContent() {
     const router = useRouter();
@@ -209,7 +209,7 @@ function EvidenceInvestigationContent() {
                     <div className="flex flex-col gap-4 rounded-2xl border border-brand-lime/60 bg-brand-lime/15 p-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-start gap-3">
                             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-lime/50 text-brand-olive">
-                                <Sparkles className="h-4 w-4" aria-hidden="true" />
+                                <MapPinned className="h-4 w-4" aria-hidden="true" />
                             </span>
                             <div>
                                 <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-brand-olive/50">Not sure what to search?</p>
@@ -273,9 +273,9 @@ function EvidenceInvestigationContent() {
             </div>
 
             <div className={`mt-6 flex flex-wrap justify-center gap-3 transition-opacity duration-300 ${step === 1 ? 'opacity-100' : 'opacity-0 hidden'}`}>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Observed station records</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Reports and warning polygons</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><ShieldCheck className="h-3.5 w-3.5" /> Source-level limitations</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><Gauge className="h-3.5 w-3.5" /> Observed station records</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><RadioTower className="h-3.5 w-3.5" /> Reports and warning polygons</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-gray bg-white px-3 py-1.5 text-xs font-medium text-brand-olive/70"><FileCheck2 className="h-3.5 w-3.5" /> Source-level limitations</span>
             </div>
 
 
