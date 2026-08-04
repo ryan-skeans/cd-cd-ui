@@ -8,7 +8,7 @@ export default function DemoUnlockModal({ open, onOpenChange, onUnlock }: { open
   return <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent>
       <div className="flex items-start justify-between gap-4">
-        <div><div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-lime/25"><FileCheck2 className="h-5 w-5 text-brand-olive" /></div><DialogTitle className="text-xl font-bold text-brand-olive">Preview the property evidence report</DialogTitle><DialogDescription className="mt-2 text-sm text-brand-olive/65">This demo opens a sample report. No payment information is requested, collected, or processed.</DialogDescription></div>
+        <div><div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-lime/25"><FileCheck2 className="h-5 w-5 text-brand-olive" /></div><DialogTitle className="text-xl font-bold text-brand-olive">Preview the property evidence report</DialogTitle><DialogDescription className="mt-2 text-sm text-brand-olive/65">Open the sample report to inspect its structure and source context.</DialogDescription></div>
         <DialogClose asChild><Button aria-label="Close demo unlock" variant="ghost" size="icon"><X /></Button></DialogClose>
       </div>
       <div className="mt-6 space-y-3 rounded-2xl border border-brand-gray/50 bg-brand-offWhite p-5 text-sm text-brand-olive/75">

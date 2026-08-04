@@ -129,7 +129,7 @@ export function HomepageHero({ data }: { data: SearchResponse }) {
                 <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-32 sm:px-6 sm:pb-20 sm:pt-[9.5rem] lg:grid-cols-[.95fr_1.05fr] lg:items-center lg:gap-16 lg:px-8 lg:pb-24 lg:pt-[10.5rem]">
                     <div>
                         <h1 className="max-w-[720px] text-balance text-[2.65rem] font-semibold leading-[1.02] tracking-[-0.055em] text-brand-olive sm:text-6xl lg:text-[4rem]">
-                            See the weather record around a property, clearly sourced and organized by time.
+                            Discover weather records for any property.
                         </h1>
                         <p className="mt-6 max-w-2xl text-base leading-7 text-brand-olive/70 sm:text-lg sm:leading-8">
                             Search a property and approximate date. ClaimDefender organizes available station observations, nearby storm reports, warning context, precipitation, and source details into an impact timeline and report preview.
@@ -143,11 +143,11 @@ export function HomepageHero({ data }: { data: SearchResponse }) {
                             </TrackedLink>
                         </div>
                         <p className="mt-5 text-sm text-brand-olive/70">
-                            Prefer to inspect the output? <Link href="/sample-report" className="font-semibold text-brand-olive underline decoration-brand-olive/25 underline-offset-4 hover:decoration-brand-olive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive focus-visible:ring-offset-2">View the fictional sample report</Link>.
+                            Prefer to inspect the output? <Link href="/sample-report" className="font-semibold text-brand-olive underline decoration-brand-olive/25 underline-offset-4 hover:decoration-brand-olive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive focus-visible:ring-offset-2">View the sample report</Link>.
                         </p>
                         <p className="mt-5 flex max-w-2xl gap-2 text-xs leading-relaxed text-brand-olive/75">
                             <Check className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                            ClaimDefender organizes available records. It does not determine damage, causation, coverage, or claim outcome.
+                            Records provide weather context; they do not verify property damage.
                         </p>
                     </div>
                     <HeroEvidencePreview data={data} />

@@ -12,7 +12,7 @@ import DemoUnlockModal from "@/components/demo-unlock-modal";
 import OfficialReport from "@/components/official-report";
 import { FEATURED_DEMO_INVESTIGATION, featuredDemoDisplayDate } from "@/lib/demo-investigation";
 import { trackDemoEvent } from "@/lib/demo-analytics";
-import { MapPin, Calendar, ArrowRight, Database, MapPinned, Gauge, RadioTower, FileCheck2 } from "lucide-react";
+import { MapPin, Calendar, ArrowRight, MapPinned, Gauge, RadioTower, FileCheck2 } from "lucide-react";
 
 function EvidenceInvestigationContent() {
     const router = useRouter();
@@ -295,9 +295,6 @@ function EvidenceInvestigationContent() {
                         Check Available Evidence <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
 
-                    <p className="flex items-center justify-center gap-2 text-center text-xs text-brand-olive/50 tracking-wide mt-1">
-                        <Database className="h-3.5 w-3.5" /> Demo only. No account or payment information is required.
-                    </p>
                 </div>
             </div>
 

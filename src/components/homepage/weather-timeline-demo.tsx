@@ -86,7 +86,6 @@ export default function WeatherTimelineDemo({ data }: { data: SearchResponse }) 
                             <p className="mt-1 text-sm font-semibold text-brand-olive">1450 Sample Ridge Road</p>
                         </div>
                     </div>
-                    <span className="w-fit rounded-full border border-brand-olive/15 bg-brand-lime/35 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-brand-olive">Fictional sample</span>
                 </div>
                 <div className="mt-4 grid gap-2 border-t border-brand-olive/10 pt-4 text-xs text-brand-olive/70 sm:grid-cols-2">
                     <p className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" aria-hidden="true" /> Cedar Rapids, Iowa</p>
@@ -118,7 +117,7 @@ export default function WeatherTimelineDemo({ data }: { data: SearchResponse }) 
                         <h3 className="text-base font-semibold text-brand-olive">Weather-event chronology</h3>
                         <p className="mt-1 text-xs leading-relaxed text-brand-olive/70">Record types stay distinct even when they occur minutes apart.</p>
                     </div>
-                    <div className="flex flex-wrap gap-2" role="group" aria-label="Filter fictional timeline">
+                    <div className="flex flex-wrap gap-2" role="group" aria-label="Filter sample timeline">
                         {filters.map((filter) => (
                             <button
                                 key={filter.value}
@@ -134,7 +133,7 @@ export default function WeatherTimelineDemo({ data }: { data: SearchResponse }) 
                     </div>
                 </div>
 
-                <p className="sr-only" aria-live="polite">Showing {visibleEntries.length} of {data.timeline.length} fictional timeline records.</p>
+                <p className="sr-only" aria-live="polite">Showing {visibleEntries.length} of {data.timeline.length} sample timeline records.</p>
                 <ol id={timelineId} className="relative mt-5 space-y-2 before:absolute before:bottom-5 before:left-[17px] before:top-5 before:w-px before:bg-brand-olive/15">
                     {visibleEntries.map((entry) => (
                         <li key={entry.id} className="relative grid grid-cols-[36px_1fr] gap-3 rounded-2xl border border-transparent p-2 transition-colors hover:border-brand-gray hover:bg-brand-offWhite/70 sm:gap-4 sm:p-3">
@@ -174,7 +173,7 @@ export default function WeatherTimelineDemo({ data }: { data: SearchResponse }) 
             </div>
 
             <footer className="flex flex-col gap-3 border-t border-brand-gray bg-brand-offWhite/70 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-                <p className="text-[11px] leading-relaxed text-brand-olive/75">Fictional sample values demonstrate the current evidence format only.</p>
+                <p className="text-[11px] leading-relaxed text-brand-olive/75">Classifications and source context travel with each record.</p>
                 <Link href="/sample-report" className="inline-flex min-h-11 items-center justify-center rounded-xl text-sm font-semibold text-brand-olive underline decoration-brand-olive/25 underline-offset-4 transition-colors hover:decoration-brand-olive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive focus-visible:ring-offset-2">
                     Open the sample report <ArrowUpRight className="ml-1.5 h-4 w-4" aria-hidden="true" />
                 </Link>

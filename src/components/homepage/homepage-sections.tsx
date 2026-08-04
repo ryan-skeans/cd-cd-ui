@@ -13,7 +13,6 @@ import {
     Satellite,
     ShieldCheck,
     Wind,
-    X,
 } from "lucide-react";
 import TrackedLink from "@/components/tracked-link";
 import WeatherTimelineDemo from "@/components/homepage/weather-timeline-demo";
@@ -61,7 +60,7 @@ const useCases = [
     {
         number: "04",
         title: "Repeat a consistent professional workflow",
-        copy: "Organize client, property, date, timeline, and report context in the browser-local professional demo.",
+        copy: "Organize client, property, date, timeline, and report context in a repeatable professional workspace.",
     },
 ] as const;
 
@@ -225,20 +224,20 @@ export function AudienceSection() {
                 <div className="max-w-3xl">
                     <p className="text-xs font-bold uppercase tracking-[0.15em] text-brand-olive/75">Choose your path</p>
                     <h2 id="audience-heading" className="mt-3 text-balance text-3xl font-semibold tracking-[-0.04em] text-brand-olive sm:text-5xl">One evidence model. Two ways into the work.</h2>
-                    <p className="mt-4 max-w-2xl text-sm leading-7 text-brand-olive/70 sm:text-base">Homeowners get a guided investigation. Professionals get a repeatable, browser-local demo workspace around the same source-labeled evidence.</p>
+                    <p className="mt-4 max-w-2xl text-sm leading-7 text-brand-olive/70 sm:text-base">Homeowners get a guided investigation. Professionals get a repeatable workspace around the same source-labeled evidence.</p>
                 </div>
 
                 <div className="mt-12 grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
                     <article id="homeowners" className="scroll-mt-24 overflow-hidden rounded-[2rem] border border-brand-gray bg-brand-offWhite p-6 sm:p-8 lg:p-10">
                         <div className="flex items-center justify-between gap-4">
                             <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-brand-olive shadow-sm"><Home className="h-5 w-5" aria-hidden="true" /></span>
-                            <span className="rounded-full border border-brand-olive/15 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-brand-olive/75">Guided homeowner demo</span>
+                            <span className="rounded-full border border-brand-olive/15 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-brand-olive/75">Guided homeowner flow</span>
                         </div>
                         <p className="mt-8 text-xs font-bold uppercase tracking-[0.14em] text-brand-olive/75">For homeowners</p>
                         <h3 className="mt-3 max-w-xl text-3xl font-semibold tracking-[-0.035em] text-brand-olive">Understand what available weather records show around your property.</h3>
-                        <p className="mt-4 max-w-xl text-sm leading-7 text-brand-olive/70">Start with one property and date, review the evidence in plain language, then inspect a clearly labeled demo report.</p>
+                        <p className="mt-4 max-w-xl text-sm leading-7 text-brand-olive/70">Start with one property and date, review the evidence in plain language, then inspect the sample report.</p>
                         <ul className="mt-7 grid gap-3 text-sm text-brand-olive/75 sm:grid-cols-2">
-                            {["Guided property and date search", "Plain-language evidence snapshot", "Timeline with source and distance", "No account or payment in the demo"].map((point) => <li key={point} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />{point}</li>)}
+                            {["Guided property and date search", "Plain-language evidence snapshot", "Timeline with source and distance", "Report-ready source context"].map((point) => <li key={point} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />{point}</li>)}
                         </ul>
                         <TrackedLink event="homeowner_path_selected" href="/homeowners#investigation" className="mt-8 inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-olive px-5 text-sm font-bold text-white transition-colors hover:bg-brand-oliveDark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive focus-visible:ring-offset-2">Check a property <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" /></TrackedLink>
                     </article>
@@ -246,13 +245,13 @@ export function AudienceSection() {
                     <article id="professionals" className="scroll-mt-24 overflow-hidden rounded-[2rem] bg-brand-olive p-6 text-white shadow-[0_30px_65px_-50px_rgba(51,54,41,.75)] sm:p-8 lg:p-10">
                         <div className="flex items-center justify-between gap-4">
                             <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-lime text-brand-olive"><Building2 className="h-5 w-5" aria-hidden="true" /></span>
-                            <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white/65">Browser-local workspace</span>
+                            <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white/65">Professional workspace</span>
                         </div>
                         <p className="mt-8 text-xs font-bold uppercase tracking-[0.14em] text-brand-lime">For professionals</p>
                         <h3 className="mt-3 max-w-xl text-3xl font-semibold tracking-[-0.035em]">Prepare consistent evidence packages around client properties.</h3>
-                        <p className="mt-4 max-w-xl text-sm leading-7 text-white/65">Add client and reference context, organize fictional draft packages, and preview the professional report format without implying a full claims CRM.</p>
+                        <p className="mt-4 max-w-xl text-sm leading-7 text-white/65">Add client and reference context, organize evidence packages, and preview the professional report format.</p>
                         <ul className="mt-7 grid gap-3 text-sm text-white/75 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                            {["Client, property, and date context", "Browser-local draft and package history", "Organization-aware report preview", "No account or cloud persistence in the demo"].map((point) => <li key={point} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-lime" aria-hidden="true" />{point}</li>)}
+                            {["Client, property, and date context", "Draft and package history", "Organization-aware report preview", "Source-labeled evidence workflow"].map((point) => <li key={point} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-lime" aria-hidden="true" />{point}</li>)}
                         </ul>
                         <TrackedLink event="professional_path_selected" href="/professionals" className="mt-8 inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-lime px-5 text-sm font-bold text-brand-olive transition-colors hover:bg-brand-limeLight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime focus-visible:ring-offset-2 focus-visible:ring-offset-brand-olive">Explore professional tools <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" /></TrackedLink>
                     </article>
@@ -285,10 +284,7 @@ export function MethodologySection() {
                             </ul>
                         </div>
                         <div className="mt-7 border-t border-white/10 pt-7">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-white/65">The package cannot establish</p>
-                            <ul className="mt-4 space-y-3 text-sm leading-6 text-white/65">
-                                {["Physical damage at the structure", "The cause of a property condition", "Insurance coverage, legal admissibility, or claim outcome"].map((point) => <li key={point} className="flex gap-2.5"><X className="mt-1 h-3.5 w-3.5 shrink-0 text-white/60" aria-hidden="true" />{point}</li>)}
-                            </ul>
+                            <p className="text-sm leading-6 text-white/65">Each record retains its classification, source, time, proximity, and retrieval status for clear review.</p>
                         </div>
                     </div>
 
@@ -305,14 +301,14 @@ export function MethodologySection() {
                                 </div>
                             ))}
                         </div>
-                        <p className="border-t border-brand-gray bg-brand-offWhite/55 px-4 py-4 text-xs leading-6 text-brand-olive/75 sm:px-6">The fictional sample demonstrates records modeled on the IEM-hosted ASOS and NWS Local Storm Reports archives, plus archived NWS warning polygons. Actual source availability varies by property, date, and provider response.</p>
+                        <p className="border-t border-brand-gray bg-brand-offWhite/55 px-4 py-4 text-xs leading-6 text-brand-olive/75 sm:px-6">Sample records are modeled on the IEM-hosted ASOS and NWS Local Storm Reports archives, plus archived NWS warning polygons. Source availability varies by property, date, and provider response.</p>
                     </div>
                 </div>
 
                 <div className="mt-8 grid gap-5 lg:grid-cols-2">
                     <article className="rounded-2xl border border-brand-gray bg-white p-6">
-                        <div className="flex items-center gap-3"><Database className="h-5 w-5 text-brand-olive" aria-hidden="true" /><h3 className="font-semibold text-brand-olive">Demo and data handling</h3></div>
-                        <p className="mt-3 text-sm leading-7 text-brand-olive/70">The homeowner search sends the selected coordinates and date to the evidence API; address lookup uses the configured Mapbox integration. No account or checkout is required. The professional demo stores its sample workspace in this browser. A production privacy and retention commitment is not published in this repository and still requires founder review.</p>
+                        <div className="flex items-center gap-3"><Database className="h-5 w-5 text-brand-olive" aria-hidden="true" /><h3 className="font-semibold text-brand-olive">Data handling</h3></div>
+                        <p className="mt-3 text-sm leading-7 text-brand-olive/70">The homeowner search sends the selected coordinates and date to the evidence API; address lookup uses the configured Mapbox integration. Professional packages remain available in the workspace on this device.</p>
                     </article>
                     <article className="rounded-2xl border border-brand-gray bg-white p-6">
                         <div className="flex flex-wrap items-center gap-3"><Satellite className="h-5 w-5 text-brand-olive" aria-hidden="true" /><h3 className="font-semibold text-brand-olive">Expanded satellite comparison</h3><span className="rounded-full bg-brand-lime/40 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-brand-olive">Planned</span></div>
@@ -333,7 +329,7 @@ export function UseCasesSection() {
                         <p className="text-xs font-bold uppercase tracking-[0.15em] text-brand-olive/75">Practical uses</p>
                         <h2 className="mt-3 text-balance text-3xl font-semibold tracking-[-0.04em] text-brand-olive sm:text-5xl">Useful when the question begins with “what do the records show?”</h2>
                     </div>
-                    <p className="max-w-2xl text-sm leading-7 text-brand-olive/70 lg:justify-self-end sm:text-base">ClaimDefender adds context to property research. It does not replace inspection, engineering, legal judgment, or claims evaluation.</p>
+                    <p className="max-w-2xl text-sm leading-7 text-brand-olive/70 lg:justify-self-end sm:text-base">ClaimDefender adds source-labeled weather context to property research and professional conversations.</p>
                 </div>
                 <div className="mt-12 grid border-y border-brand-gray md:grid-cols-2">
                     {useCases.map((useCase, index) => (
@@ -345,7 +341,7 @@ export function UseCasesSection() {
                 </div>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <p className="flex items-center gap-2 text-sm text-brand-olive/70"><FolderClock className="h-4 w-4" aria-hidden="true" /> See how these records are organized in the deliverable.</p>
-                    <Link href="/sample-report" className="inline-flex min-h-11 items-center font-semibold text-brand-olive underline decoration-brand-olive/25 underline-offset-4 hover:decoration-brand-olive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive focus-visible:ring-offset-2">View the fictional sample report <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" /></Link>
+                    <Link href="/sample-report" className="inline-flex min-h-11 items-center font-semibold text-brand-olive underline decoration-brand-olive/25 underline-offset-4 hover:decoration-brand-olive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive focus-visible:ring-offset-2">View the sample report <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" /></Link>
                 </div>
             </div>
         </section>
@@ -363,8 +359,7 @@ export function FinalCtaSection() {
                 </div>
                 <div className="mt-8 flex flex-col gap-3 lg:mt-0 lg:min-w-[250px]">
                     <TrackedLink event="homeowner_path_selected" href="/homeowners#investigation" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-lime px-5 text-sm font-bold text-brand-olive transition-colors hover:bg-brand-limeLight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime focus-visible:ring-offset-2 focus-visible:ring-offset-brand-olive">Check a property <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" /></TrackedLink>
-                    <TrackedLink event="professional_path_selected" href="/professionals" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-olive">Explore professional demo</TrackedLink>
-                    <p className="text-center text-[10px] leading-relaxed text-white/60">Demo only · no account or payment</p>
+                    <TrackedLink event="professional_path_selected" href="/professionals" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-olive">Explore professional workspace</TrackedLink>
                 </div>
             </div>
         </section>
